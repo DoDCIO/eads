@@ -18,7 +18,8 @@ user_message | Informational message for end-users | Body | NO
 ```json
 
 {  "error": {    "developer_message" : "A detailed description of the problem with suggestions on how to solve.",
-    "user_message" : "An informational message for end-users."}
+    "user_message" : "An informational message for end-users."
+  }}
 
 ```
 
