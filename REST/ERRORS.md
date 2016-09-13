@@ -10,15 +10,19 @@ Error responses should contain the following parameters:
 
 Parameter  | Description | Header/Body | Required 
 ------------- | ------------- | ------------- | -------------
-developer_message | Provides developer information about error | Body | YES
-user_message | Informational message for end-users | Body | NO
+developerMessage | Provides developer information about error | Body | YES
+userMessage | Informational message for end-users | Body | NO 
+errorCode | Application specific error code | Body | YES 
+moreInfo | link to find additional information about the error | Body | NO 
 
 ### Example:
 
 ```json
 
-{  "error": {    "developer_message" : "A detailed description of the problem with suggestions on how to solve.",
-    "user_message" : "An informational message for end-users."
+{  "error": {    "developerMessage" : "A detailed description of the problem with suggestions on how to solve.",
+    "userMessage" : "An informational message for end-users.",
+    "errorCode" : 9583,
+    "moreInfo" : "https://link/to/additional/information"
   }}
 
 ```
