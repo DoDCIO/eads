@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
 # REST API Errors
 
 ## Summary
@@ -35,9 +33,9 @@ HTTP status codes should be used to indicate successful and unsuccessful request
 
 Status Code Class  | Description 
 ------------- | ------------- 
-<span class="label label-success">2xx</span> | Request was successful
-<span class="label label-warning">4xx</span> | The application did something wrong (Client)
-<span class="label label-danger">5xx</span> | The API did something wrong (Server)
+2xx | Request was successful
+4xx | The application did something wrong (Client)
+5xx | The API did something wrong (Server)
 
 An appropriate status code should be returned based on the specific type of successful or unsuccessful response. Below is a list of acceptable status codes:
 
