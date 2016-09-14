@@ -6,7 +6,9 @@ This document covers the convention for filtering a result set for a given API r
 
 ## Filtering
 
-When returning a collection, certain resources may support filtering. The recommended approach is to utilize a query-string parameter. To filter, perform a GET request and put your filters as the "filters" parameter of the query string. List resources can be filtered by a single condition or multiple conditions. Filter conditions against the same field will be logically combined using OR. After filter conditions have been combined within fields, conditions against different fields will be combined using logical AND.Please refer to the endpoint documentation for the specified valid filter attributes for each resource. Filtering should be offered on a case-by-case basis for only list resources that need it. Small collections of resources can be filtered on the client, if needed.
+When returning a collection, certain resources may support filtering. The recommended approach is to utilize a query-string parameter. To filter, perform a GET request and put your filters as the "filters" parameter of the query string. List resources can be filtered by a single condition or multiple conditions. Filter conditions against the same field will be logically combined using OR. After filter conditions have been combined within fields, conditions against different fields will be combined using logical AND.
+
+Please refer to the endpoint documentation for the specified valid filter attributes for each resource. Filtering should be offered on a case-by-case basis for only list resources that need it. Small collections of resources can be filtered on the client, if needed.
 
 ### Parameters
 
@@ -23,7 +25,7 @@ Single filters are implemented by providing the name of the field on which to fi
 Operator | Description | URL Encoded Operator | Examples
 -------- | ----------- | -------------------- | --------
 == | equal | %3D%3D | First Name is 'John'<br /> `?filters=firstName%3D%3DJohn`
-!= | not equal | !%3D | First Name is not 'John'<br /> `filter=firstName!%3DJohn`
+!= | not equal | !%3D | First Name is not 'John'<br /> `filters=firstName!%3DJohn`
 > | greater than | %3E | Cost is greater than 400<br /> `?filters=cost%3E400`
 < | less than | %3C | Cost is less than 400<br /> `?filters=cost%3C400`
 >= | greater than or equal | %3E%3D | Cost is greater than or equal to 400<br /> `?filters=cost%3E%3D400`
