@@ -111,6 +111,27 @@ Resources can be retrieved by sending a `GET` request to an endpoint.
 
 ## Sorting
 
+A server **MAY** choose to support requests to sort resource collections based on one or more "sort fields".
+
+An endpoint **MAY** support requests to sort the resources with a `sort` query parameter. The value for `sort` **MUST** represent sort fields.
+
+```
+GET /books?sort=name
+```
+
+An endpoint **MAY** support multiple sort fields by allowing comma-separated sort fields.  Sort fields **SHOULD** be applied in the order specified.
+
+```
+GET /books?sort=name,yearPublished
+```
+
+The sort order for each sort field **MUST** be ascending unless it is prefixed with a minus, in which case it **MUST** be descending.
+
+```
+GET /books?sort=name,-yearPublished
+```
+If the server does not support sorting as specified in the query parameter `sort`, it **MUST** return `400 Bad Request`.
+
 ## Pagination
 
 ## Filtering
