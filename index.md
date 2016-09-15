@@ -7,6 +7,16 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 interpreted as described in
 [RFC2119](http://tools.ietf.org/html/rfc2119).
 
+## Schema
+
+All API access is over HTTPS and all data is sent and received as JSON.
+
+All timestamps are returned in ISO 8601 format:
+
+```
+YYYY-MM-DDTHH:MM:SSZ
+```
+
 ## Content Negotiation
 
 ### Client Responsibilities
