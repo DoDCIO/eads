@@ -248,7 +248,41 @@ If the server does not support sorting as specified in the query parameter `sort
 
 ### Pagination
 
+A server **MAY** choose to limit the number of resources returned in a response.
 
+A server **MUST** provide links to traverse a paginated data set (“pagination links”).  These links **MUST** be provided using the `Link` header as defined in [RFC5988](https://tools.ietf.org/html/rfc5988).
+
+The following links **MUST** be used for pagination:
+
+* `first`: The first page of data
+* `last`: The last page of data
+* `prev`: The previous page of data
+* `next`: The next page of data
+
+An example `Link` header might look like this
+
+```http
+Link: <https://[BASE_URL]/api/v1/[RESOURCE]/?limit=20&offset=0>; rel="first",
+      <https://[BASE_URL]/api/v1/[RESOURCE]/?limit=20&offset=380>; rel="last",
+      <https://[BASE_URL]/api/v1/[RESOURCE]/?limit=20&offset=40>; rel="prev",
+      <https://[BASE_URL]/api/v1/[RESOURCE]/?limit=20&offset=80>; rel="next"
+```
+
+A link **MUST** be omitted if it is unavailable.
+
+The `limit` and `offset` query parameters are reserved for pagination and **SHOULD** be used by servers and clients for pagination operations.
+
+* `limit`: The number of resource objects to return in the response
+* `offset`: The location in the overall resultset to begin retrieving resource objects
+
+An example client request using `limit` and `offset`
+
+```http
+GET /books?limit=20&offset=40 HTTP/1.1
+Accept: application/json
+```
+
+Servers **MUST** return a `400 Bad Request` if the value specified by the `offset` query parameter exceeds the total resource count of the resource being retrieved.
 
 ### Filtering
 
