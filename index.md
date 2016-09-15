@@ -1,37 +1,37 @@
-# Introduction
+## Introduction
 
-# Conventions
+## Conventions
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in
 [RFC2119](http://tools.ietf.org/html/rfc2119).
 
-# Content Negotiation
+## Content Negotiation
 
-## Client Responsibilities
+### Client Responsibilities
 
 Clients **MUST** send all data in request documents with the header `Content-Type: application/json`.
 
 Clients **SHOULD** specify the preferred media type using one of the methods below:
 
-### Query Parameter
+#### Query Parameter
 
 Specify the preferred media type using the `format` query parameter.
 
-```http
+```
 https://[BASE_URL]/api/v1/[RESOURCE]?format=json
 ```
 
-### URL Extension
+#### URL Extension
 
 Specify the preferred media type using a URL extension.
 
-```http
+```
 https://[BASE_URL]/api/v1/[RESOURCE].json
 ```
 
-### Accept Header
+#### Accept Header
 
 Specify the preferred media type using the Accept request header.
 
@@ -41,7 +41,7 @@ Accept: application/json;
 
 > The Accept header can accept multiple media types along with quality factors to specify media type preference. See [Section 14.1 of RFC2616](https://tools.ietf.org/html/rfc2616#section-14.1) for more information.
 
-## Server Responsibilities
+### Server Responsibilities
 
 Servers **MUST** send all data in response documents with the header `Content-Type: application/json`.
 
@@ -57,11 +57,11 @@ Servers **SHOULD** use the following precedence to determine the appropriate med
 
 > The first method found will be used. If no method is used to specify the preferred media type, json will be sent back by default.
 
-# Document Structure
+## Document Structure
 
 This section describes the structure of request/response documents.  These documents are defined in [JavaScript Object Notation (JSON)](https://tools.ietf.org/html/rfc7159).
 
-## Top Level
+### Top Level
 
 A JSON object **MUST** be at the root of every request/response document.  This object defines a document's "top level".
 
@@ -78,7 +78,7 @@ The `data` member **MUST** contain either:
 * a single [resource object][resource objects] for requests targeting single resources
 * an array of [resource objects] or an empty array for requests targeting resource collections
 
-## <a href="#document-resource-objects" id="document-resource-objects" class="headerlink"></a> Resource Objects
+### <a href="#document-resource-objects" id="document-resource-objects" class="headerlink"></a> Resource Objects
 
 A resource object **MUST** contain at least the following top-level members:
 
@@ -89,7 +89,7 @@ In addition, a resource object **MAY** contain any of these top-level members:
 * `createdAt`: The date/time the resource was created [ISO 8601 Datetime w/ Timezone].
 * `updatedAt`: The date/time the resource was last updated [ISO 8601 Datetime w/ Timezone].
 
-## Meta Objects
+### Meta Objects
 
 A meta object is used to provide additional information about the data being returned.
 
@@ -103,43 +103,159 @@ In addition, a meta object **MAY** contain any of these top-level members:
 * `user`: The user ID of the user making the request [string].
 * `date`: The date/time the request was received [ISO 8601 Datetime w/ Timezone].  
 
-# Retrieving Resources
+## Retrieving Data
 
-Resources can be retrieved by sending a `GET` request to an endpoint.
+Data can be retrieved by sending a `GET` request to an endpoint.
 
-## Partial Responses
+Responses can be further refined with the optional features described below.
 
-## Sorting
+### Retrieving Resources
+
+There are 2 ways to retrieve resources:
+
+* Retrieve a collection of resources
+* Retrieve a single resource
+
+The following request retrieves a collection of books:
+
+```http
+GET /books HTTP/1.1
+Accept: application/json
+```
+
+The following request retrieves a single book:
+
+```http
+GET /books/1 HTTP/1.1
+Accept: application/json
+```
+
+#### Responses
+
+##### 200 OK
+
+A server **MUST** respond to a successful request to retrieve an individual resource or resource collection with a `200 OK` response.
+
+A server **MUST** respond to a successful request to retrieve a resource collection with an array of [resource objects] or an empty array (`[]`).
+
+A `GET` request to a collection of books could return:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "meta": {
+    "resourceType": "Book",
+    "responseTime": 73
+  },
+  "data": [
+    {
+      "id": "1",
+      "name": "The Best Book Ever",
+      "yearPublished": "2005"
+    },
+    {
+      "id": "2",
+      "name": "Another Book",
+      "yearPublished": "2012"
+    }
+  ]
+}
+```
+
+A similar response representing an empty collection would be:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "meta": {
+    "resourceType": "Book",
+    "responseTime": 26
+  },
+  "data": []
+}
+```
+
+A `GET` request to an individual book could return:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "meta": {
+    "resourceType": "Book",
+    "responseTime": 49
+  },
+  "data": {
+    "id": "1",
+    "name": "The Best Book Ever",
+    "yearPublished": "2005"
+  }
+}
+```
+##### 404 Not Found
+
+A server **MUST** respond with `404 Not Found` when processing a request to retrieve a single resource that does not exist.
+
+##### Other Responses
+
+A server **MAY** respond with other HTTP status codes.
+
+A server **MAY** include error details with error responses.
+
+### Partial Responses
+
+A client **MAY** request that an endpoint return only specific fields in the response by including a `fields` query parameter.
+
+The value of the `fields` parameter **MUST** be a comma-separated list that refers to the name(s) of the fields to be returned.
+
+If a client requests a specific set of fields using the `fields` query parameter, an endpoint **MUST NOT** include additional fields in resource objects in its response.
+
+```http
+GET /books?fields=name,yearPublished HTTP/1.1
+Accept: application/json
+```
+
+### Sorting
 
 A server **MAY** choose to support requests to sort resource collections based on one or more "sort fields".
 
 An endpoint **MAY** support requests to sort the resources with a `sort` query parameter. The value for `sort` **MUST** represent sort fields.
 
 ```http
-GET /books?sort=name
+GET /books?sort=name HTTP/1.1
+Accept: application/json
 ```
 
 An endpoint **MAY** support multiple sort fields by allowing comma-separated sort fields.  Sort fields **SHOULD** be applied in the order specified.
 
 ```http
-GET /books?sort=name,yearPublished
+GET /books?sort=name,yearPublished HTTP/1.1
+Accept: application/json
 ```
 
 The sort order for each sort field **MUST** be ascending unless it is prefixed with a minus, in which case it **MUST** be descending.
 
 ```http
-GET /books?sort=name,-yearPublished
+GET /books?sort=name,-yearPublished HTTP/1.1
+Accept: application/json
 ```
 If the server does not support sorting as specified in the query parameter `sort`, it **MUST** return `400 Bad Request`.
 
-## Pagination
+### Pagination
 
-## Filtering
 
-# Creating, Updating, and Deleting Resources
 
-# Query Parameters
+### Filtering
 
-# Errors
+## Creating, Updating, and Deleting Resources
+
+## Query Parameters
+
+## Errors
 
 [resource objects]: #document-resource-objects
