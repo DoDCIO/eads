@@ -23,33 +23,9 @@ YYYY-MM-DDTHH:MM:SSZ
 
 Clients **MUST** send all data in request documents with the header `Content-Type: application/json`.
 
-Clients **SHOULD** specify the preferred media type using one of the methods below:
+Clients **SHOULD** specify a response media type of JSON using the header: `Accept: application/json;`
 
-#### Query Parameter
-
-Specify the preferred media type using the `format` query parameter.
-
-```
-https://[BASE_URL]/api/v1/[RESOURCE]?format=json
-```
-
-#### URL Extension
-
-Specify the preferred media type using a URL extension.
-
-```
-https://[BASE_URL]/api/v1/[RESOURCE].json
-```
-
-#### Accept Header
-
-Specify the preferred media type using the Accept request header.
-
-```http
-Accept: application/json;
-```
-
-> The Accept header can accept multiple media types along with quality factors to specify media type preference. See [Section 14.1 of RFC2616](https://tools.ietf.org/html/rfc2616#section-14.1) for more information.
+> If the `Accept` header is not sent, JSON will be sent back by default.
 
 ### Server Responsibilities
 
@@ -57,15 +33,7 @@ Servers **MUST** send all data in response documents with the header `Content-Ty
 
 Servers **MUST** respond with a `415 Unsupported Media Type` status code if a request specifies a `Content-Type` other than `Content-Type: application/json`.
 
-Servers **MUST** respond with a `406 Not Acceptable` status code if an unsupported media type preference is specified.
-
-Servers **SHOULD** use the following precedence to determine the appropriate media type for the response:
-
-1. Query Parameter
-2. URL Extension
-3. Accept Header
-
-> The first method found will be used. If no method is used to specify the preferred media type, json will be sent back by default.
+Servers **MUST** respond with a `406 Not Acceptable` status code if a request specifies `Accept` other than `Accept: application/json;`.
 
 ## Document Structure
 
