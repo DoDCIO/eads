@@ -19,7 +19,7 @@ Clients **SHOULD** specify the preferred media type using one of the methods bel
 
 Specify the preferred media type using the `format` query parameter.
 
-```
+```http
 https://[BASE_URL]/api/v1/[RESOURCE]?format=json
 ```
 
@@ -27,7 +27,7 @@ https://[BASE_URL]/api/v1/[RESOURCE]?format=json
 
 Specify the preferred media type using a URL extension.
 
-```
+```http
 https://[BASE_URL]/api/v1/[RESOURCE].json
 ```
 
@@ -35,7 +35,7 @@ https://[BASE_URL]/api/v1/[RESOURCE].json
 
 Specify the preferred media type using the Accept request header.
 
-```
+```http
 Accept: application/json;
 ```
 
@@ -115,19 +115,19 @@ A server **MAY** choose to support requests to sort resource collections based o
 
 An endpoint **MAY** support requests to sort the resources with a `sort` query parameter. The value for `sort` **MUST** represent sort fields.
 
-```
+```http
 GET /books?sort=name
 ```
 
 An endpoint **MAY** support multiple sort fields by allowing comma-separated sort fields.  Sort fields **SHOULD** be applied in the order specified.
 
-```
+```http
 GET /books?sort=name,yearPublished
 ```
 
 The sort order for each sort field **MUST** be ascending unless it is prefixed with a minus, in which case it **MUST** be descending.
 
-```
+```http
 GET /books?sort=name,-yearPublished
 ```
 If the server does not support sorting as specified in the query parameter `sort`, it **MUST** return `400 Bad Request`.
