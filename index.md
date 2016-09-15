@@ -43,7 +43,7 @@ Accept: application/json;
 
 ## Server Responsibilities
 
-Servers **MUST** send all data in request documents with the header `Content-Type: application/json`.
+Servers **MUST** send all data in response documents with the header `Content-Type: application/json`.
 
 Servers **MUST** respond with a `415 Unsupported Media Type` status code if a request specifies a `Content-Type` other than `Content-Type: application/json`.
 
@@ -103,12 +103,22 @@ In addition, a meta object **MAY** contain any of these top-level members:
 * `user`: The user ID of the user making the request [string].
 * `date`: The date/time the request was received [ISO 8601 Datetime w/ Timezone].  
 
+# Retrieving Resources
+
+Resources can be retrieved by sending a `GET` request to an endpoint.
+
+## Partial Responses
+
+## Sorting
+
+## Pagination
+
+## Filtering
+
+# Creating, Updating, and Deleting Resources
+
+# Query Parameters
+
+# Errors
+
 [resource objects]: #document-resource-objects
-
-# Retrieving Data
-
-Data can be fetched by sending a `GET` request to an endpoint.
-
-## Retrieving Resources
-
-A server **MUST**
