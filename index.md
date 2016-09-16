@@ -394,7 +394,157 @@ backslash | \ | \\\
 
 ## Creating, Updating, and Deleting Resources
 
+A server **MAY** allow resources to be created.  It **MAY** also allow existing resources to be modified or deleted.
+
+A request **MUST** completely succeed or fail (in a single "transaction").  No partial updates are allowed.
+
+### Creating Resources
+
+A resource can be created by sending a `POST` request to the collections endpoint for that resource type.  The request **MUST** include a single [resource object][resource objects].
+
+A new book might be created with the following request:
+
+```http
+POST /books HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "data": {
+    "title": "The 2nd Greatest Book in the World",
+    "author": {
+      "id": "175"
+    },
+    "publisher": {
+      "id": "19"
+    },
+    "yearPublished": "2016"
+  }
+}
+```
+
+#### Responses
+
+##### 201 Created
+
+If the requested resource has been created successfully, the server **MUST** return a `201 Created` status code.
+
+The response **SHOULD** include a `Location` header identifying the location of the newly created resource.
+
+The response **MUST** also include a document that contains the newly created resource.
+
+```http
+HTTP/1.1 201 CREATED
+Location: https://api.example.com/v1/books/3
+Content-Type: application/json
+
+{
+  "meta": {
+    "resourceType": "Book",
+    "responseTime": 63
+  },
+  "data": {
+    "id": "3",
+    "href": "/books/3",
+    "title": "The 2nd Greatest Book in the World",
+    "author": {
+      "id": "175",
+      "href": "/authors/175",
+      "name": "Jane Smith"
+    },
+    "publisher": {
+      "id": "19",
+      "href": "/publishers/19",
+      "name": "We Settle for Less, Inc."
+    },
+    "yearPublished": "2016",
+    "reviews": {
+      "href": "/books/3/reviews",
+      "totalCount": 0
+    }
+  }
+}
+```
+
+##### 400 Bad Request
+
+A server **MAY** return `400 Bad Request` if unable to create the resource due to missing or invalid data.
+
+##### 403 Forbidden
+
+A server **MAY** return `403 Forbidden` in response to an unsupported request to create a resource.
+
+##### Other Responses
+
+A server **MAY** respond with other HTTP status codes.
+
+### Updating Resources
+
+A resource can be updated by sending a `PATCH` request to the URL that represents the resource.
+
+The `PATCH` request **MUST** include a single [resource object][resource objects].
+
+```http
+PATCH /books/1 HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "data": {
+    "title": "The Best Book in the World"
+  }
+}
+```
+
+#### Updating a Resource's Attributes
+
+Any or all of a resource's attributes **MAY** be included in the resource object included in a `PATCH` request.
+
+If a request does not include all of the attributes for a resource, the server **MUST** interpret the missing attributes as if they were included with their current values.  The server **MUST NOT** interpret missing attributes as `null` values.
+
+#### Updating a Resource's Relationships
+
+Any or all of a resource's relationships **MAY** be included in the resource object included in a `PATCH` request.
+
+If a request does not include all of the relationships for a resource, the server **MUST** interpret the missing relationships as if they were included with their current values.  The server **MUST NOT** interpret missing relationships as `null` or empty values.
+
+If a relationship is included in the resource object included in a `PATCH` request, the relationship's value will be replaced with the value specified in the request.  A complete replacement will be performed on to-many relationships.
+
+A server **MAY** reject an attempt to do a full replacement of a to-many relationship.  If so, the server **MUST** reject the entire update, and return a `403 Forbidden` response.
+
+#### Responses
+
+##### 200 OK
+
+A server **MUST** return a `200 OK` status code if an update is successful.  The response document **MUST** include a representation of the updated resource as if a `GET` request was made.
+
+##### 400 Bad Request
+
+A server **MAY** return `400 Bad Request` if unable to update the resource due to missing or invalid data.
+
+##### 403 Forbidden
+
+A server **MAY** return `403 Forbidden` in response to an unsupported request to update a resource.
+
+##### 404 Not Found
+
+A server **MUST** return `404 Not Found` when processing a request to modify a resource (or related resource) that does not exist.
+
+##### Other Responses
+
+A server **MAY** respond with other HTTP status codes.
+
+### Updating Relationships
+
+#### Updating To-One Relationships
+
+#### Updating To-Many Relationships
+
+### Deleting Resources
+
 ## Query Parameters
+
+If a server encounters a query parameter that it does not know how to process, it **MUST** return `400 Bad Request`
 
 ## Errors
 
