@@ -17,6 +17,10 @@ All timestamps are returned in ISO 8601 format:
 YYYY-MM-DDTHH:MM:SSZ
 ```
 
+### Versioning
+
+Servers
+
 ### Compact Representations
 
 When retrieving a list of [resource objects], the response will include a *subset* of the attributes for that resource.  This is the "compact" representation of the resource.  To obtain all attributes for a resource, retrieve the "full" representation.
@@ -81,11 +85,17 @@ Accept: application/json
 
 ### Client Responsibilities
 
-Clients **MUST** send all data in request documents with the header `Content-Type: application/json`.
+Clients **MUST** send all data in request documents with the header: `Content-Type: application/json`.
 
-Clients **SHOULD** specify a response media type of JSON using the header: `Accept: application/json;`
+Clients **SHOULD** specify a response media type of JSON with the header: `Accept: application/json;`
 
 > If the `Accept` header is not sent, JSON will be sent back by default.
+
+Clients **MUST** specify the desired version of the API as part of the request path: `https://[BASE_URL]/[VERSION]/[RESOURCE]`
+
+```
+https://api.example.com/v1/books
+```
 
 ### Server Responsibilities
 
@@ -94,6 +104,10 @@ Servers **MUST** send all data in response documents with the header `Content-Ty
 Servers **MUST** respond with a `415 Unsupported Media Type` status code if a request specifies a `Content-Type` other than `Content-Type: application/json`.
 
 Servers **MUST** respond with a `406 Not Acceptable` status code if a request specifies `Accept` other than `Accept: application/json;`.
+
+Servers **MUST** version their APIs.  Version names **MUST** be whole number integers preceded by the letter v: `v1`, `v2`, `v3`...
+
+Servers **MUST** respond with a `406 Not Acceptable` status code if a request specifies an unsupported version.
 
 ## Document Structure
 
@@ -317,10 +331,10 @@ The following links **MUST** be used for pagination:
 An example `Link` header might look like this
 
 ```http
-Link: <https://[BASE_URL]/api/v1/[RESOURCE]/?limit=20&offset=0>; rel="first",
-      <https://[BASE_URL]/api/v1/[RESOURCE]/?limit=20&offset=380>; rel="last",
-      <https://[BASE_URL]/api/v1/[RESOURCE]/?limit=20&offset=40>; rel="prev",
-      <https://[BASE_URL]/api/v1/[RESOURCE]/?limit=20&offset=80>; rel="next"
+Link: <https://[BASE_URL]/v1/[RESOURCE]/?limit=20&offset=0>; rel="first",
+      <https://[BASE_URL]/v1/[RESOURCE]/?limit=20&offset=380>; rel="last",
+      <https://[BASE_URL]/v1/[RESOURCE]/?limit=20&offset=40>; rel="prev",
+      <https://[BASE_URL]/v1/[RESOURCE]/?limit=20&offset=80>; rel="next"
 ```
 
 A link **MUST** be omitted if it is unavailable.
