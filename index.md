@@ -107,7 +107,7 @@ A document **MUST** contain at least one of the following top-level members:
 
 * `meta`: a meta object containing information about the data being returned
 * `data`: the resource(s) being returned
-* `error`: an object containing information about any or all errors that occurred during the request
+* `error`: an [error object][error objects] containing information about any or all errors that occurred during the request
 
 The members `data` and `error` **MUST NOT** coexist in the same document.
 
@@ -128,7 +128,7 @@ In addition, a resource object **MAY** contain any of these top-level members:
 * `createdAt`: The timestamp the resource was created [string (ISO 8601)].
 * `updatedAt`: The timestamp the resource was last updated [string (ISO 8601)].
 
-### Meta Objects
+### <a href="#document-meta-objects" id="document-meta-objects" class="headerlink"></a> Meta Objects
 
 A meta object is used to provide additional information about the data being returned.
 
@@ -388,4 +388,47 @@ backslash | \ | \\\
 
 ## Errors
 
+### Processing Errors
+
+A server **MAY** choose to stop processing as soon as a problem is encountered, or it **MAY** continue processing and encounter multiple problems.
+
+When a server encounters multiple problems for a single request, the most generally applicable HTTP error code **SHOULD** be used in the response. The following is a list of common error codes:
+
+Status Code | Status Message | Description
+----------- | -------------- | -----------
+400 | BAD REQUEST | Request failed. This is mostly due to missing or invalid request parameters.
+401 | UNAUTHORIZED | Request failed. This status code is used for missing or invalid credentials (NOT AUTHENTICATED).
+403 | FORBIDDEN | Request failed. This status code is used for insufficient privileges (NOT AUTHORIZED).
+404 | NOT FOUND | Request failed. This status code is used when the requested resource does not exist.
+405 | METHOD NOT ALLOWED | Request failed. This status code is used when the request is known but not supported by the target resource.
+500 | INTERNAL SERVER ERROR | Request failed. An error occurred on the server.
+
+### <a href="#error-objects" id="error-objects" class="headerlink"></a> Error Objects
+
+Error objects provide additional information about problems encountered while processing a request.
+
+An error object **MUST** contain at least the following top-level members:
+
+* `developerMessage`: Provides the developer with information about the error(s) [string].
+* `errorCode`: Application specific error code [string].
+
+In addition, a resource object **MAY** contain any of these top-level members:
+
+* `userMessage`: Informational message for end-users [string].
+* `moreInfo`: Link to find additional information about the error [string].
+
+An example error object:
+
+```json
+{
+  "error": {
+    "developerMessage" : "A detailed description of the problem with suggestions on how to solve.",
+    "userMessage" : "An informational message for end-users.",
+    "errorCode" : 9583,
+    "moreInfo" : "https://link/to/additional/information"
+  }
+}
+```
+
 [resource objects]: #document-resource-objects
+[error objects]: #error-objects
