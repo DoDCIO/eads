@@ -17,6 +17,66 @@ All timestamps are returned in ISO 8601 format:
 YYYY-MM-DDTHH:MM:SSZ
 ```
 
+### Compact Representations
+
+When retrieving a list of [resource objects], the response will include a *subset* of the attributes for that resource.  This is the "compact" representation of the resource.  To obtain all attributes for a resource, retrieve the "full" representation.
+
+```http
+GET /books HTTP/1.1
+Accept: application/json
+
+{
+  "meta": {},
+  "data": [
+    {
+      "id": "1",
+      "href": "/books/1",
+      "title": "The Greatest Book in the World"
+    },
+    {
+      "id": "2",
+      "href": "/books/2",
+      "title": "The Worst Book in the World"
+    }
+  ]
+}
+```
+
+### Full Representations
+
+When retrieving an individual resource, the response will typically include *all* attributes for that resource.  This is the "full" representation of the resource.
+
+```http
+GET /books/1 HTTP/1.1
+Accept: application/json
+
+{
+  "meta": {},
+  "data": {
+    "id": "1",
+    "href": "/books/1",
+    "title": "The Greatest Book in the World",
+    "author": {
+      "id": "247",
+      "href": "/authors/247",
+      "name": "John Smith"
+    },
+    "publisher": {
+      "id": "38",
+      "href": "/publishers/38",
+      "name": "Only the Greatest, Inc."
+    },
+    "yearPublished": "2016",
+    "reviews": {
+      "href": "/books/1/reviews",
+      "totalCount": 382
+    }
+  }
+}
+```
+
+> Sub-resources included in the response will be compact representations.
+
 ## Content Negotiation
 
 ### Client Responsibilities
@@ -43,7 +103,7 @@ This section describes the structure of request/response documents.  These docum
 
 A JSON object **MUST** be at the root of every request/response document.  This object defines a document's "top level".
 
-A response document **MUST** contain at least one of the following top-level members:
+A document **MUST** contain at least one of the following top-level members:
 
 * `meta`: a meta object containing information about the data being returned
 * `data`: the resource(s) being returned
@@ -61,11 +121,12 @@ The `data` member **MUST** contain either:
 A resource object **MUST** contain at least the following top-level members:
 
 * `id`: The unique identifier for the resource [string].
+* `href`: The unique url for the resource [string].
 
 In addition, a resource object **MAY** contain any of these top-level members:
 
-* `createdAt`: The date/time the resource was created [ISO 8601 Datetime w/ Timezone].
-* `updatedAt`: The date/time the resource was last updated [ISO 8601 Datetime w/ Timezone].
+* `createdAt`: The timestamp the resource was created [string (ISO 8601)].
+* `updatedAt`: The timestamp the resource was last updated [string (ISO 8601)].
 
 ### Meta Objects
 
@@ -130,13 +191,13 @@ Content-Type: application/json
   "data": [
     {
       "id": "1",
-      "name": "The Best Book Ever",
-      "yearPublished": "2005"
+      "href": "/books/1",
+      "title": "The Greatest Book in the World"
     },
     {
       "id": "2",
-      "name": "Another Book",
-      "yearPublished": "2012"
+      "href": "/books/2",
+      "title": "The Worst Book in the World"
     }
   ]
 }
@@ -170,11 +231,27 @@ Content-Type: application/json
   },
   "data": {
     "id": "1",
-    "name": "The Best Book Ever",
-    "yearPublished": "2005"
+    "href": "/books/1",
+    "title": "The Greatest Book in the World",
+    "author": {
+      "id": "247",
+      "href": "/authors/247",
+      "name": "John Smith"
+    },
+    "publisher": {
+      "id": "38",
+      "href": "/publishers/38",
+      "name": "Only the Greatest, Inc."
+    },
+    "yearPublished": "2016",
+    "reviews": {
+      "href": "/books/1/reviews",
+      "totalCount": 382
+    }
   }
 }
 ```
+
 ##### 404 Not Found
 
 A server **MUST** respond with `404 Not Found` when processing a request to retrieve a single resource that does not exist.
@@ -263,6 +340,47 @@ Accept: application/json
 Servers **MUST** return a `400 Bad Request` if the value specified by the `offset` query parameter exceeds the total resource count of the resource being retrieved.
 
 ### Filtering
+
+A server **MAY** choose to support requests to filter resource collections based on one or more criterion.
+
+An endpoint **MAY** support requests to filter the resources with a `filters` query parameter.
+
+#### Single Conditions
+
+Single filters are implemented by providing the name of the field on which to filter followed by the operator on which to test and lastly the value or values on which to test against. The list of valid operators are as follows.
+
+Operator | Description | URL Encoded Operator | Examples
+-------- | ----------- | -------------------- | --------
+== | equal | %3D%3D | The year published is '2016'<br /> `?filters=yearPublished%3D%3D2016`
+!= | not equal | !%3D | The year published is not '2016'<br /> `filters=yearPublished!%3D2016`
+> | greater than | %3E | The year published is greater than 2000<br /> `?filters=yearPublished%3E2000`
+< | less than | %3C | The year published is less than 2016<br /> `?filters=yearPublished%3C2016`
+>= | greater than or equal | %3E%3D | The year published is greater than or equal to 2000<br /> `?filters=yearPublished%3E%3D2000`
+<= | less than or equal | %3C%3D | The year published is less than or equal to 2016<br /> `?filters=yearPublished%3C%3D2000`
+>=< | inclusively between | %3E%3D%3C | The year published is at least 2000 and at most 2016<br /> `?filters=yearPublished%3E%3D%3C2000;2016`
+>< | exclusively between | %3E%3C | The year published is greater than 2000 and less than 2016<br /> `?filters=yearPublished%3E%3C2000;2016`
+
+### Multiple Conditions
+
+Multiple conditions will be accommodated by separating single conditions with a comma (',').
+
+```
+[RESOURCE_URL]?filters=attribute%3D%3Dvalue,attribute2%3E%3CminValue;maxValue
+```
+
+### Special Characters
+
+As the comma and semi-colon are assigned special meaning, any instance of the following characters contained within individual values must be escaped.
+
+Character | Text | Escaped As
+--------- | ---- | ----------
+semicolon | ; | \;
+comma | , | \,
+backslash | \ | \\\
+
+```
+[RESOURCE_URL]?filters=fullName%3D%3DMontoya\,Inigo
+```
 
 ## Creating, Updating, and Deleting Resources
 
