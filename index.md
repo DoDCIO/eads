@@ -536,11 +536,151 @@ A server **MAY** respond with other HTTP status codes.
 
 ### Updating Relationships
 
+Although relationships can be modified along with resources, the server **MAY** provide links to modify them independently.
+
 #### Updating To-One Relationships
+
+If the server allows independent modification of relationships...
+
+A server **MUST** respond to `PATCH` requests for the to-one relationship URL.
+
+The `PATCH` request **MUST** include a top-level member named `data` containing one of the following:
+
+* a resource identifier object corresponding to the new related resource.
+* `null`, to remove the relationship.
+
+A request to update the author of a book:
+
+```http
+PATCH /books/1/author HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "data": {
+    "id": "339"
+  }
+}
+```
+
+A request to clear the author of a book:
+
+```http
+PATCH /books/1/author HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "data": null
+}
+```
+
+If the relationship is updated successfully then the server **MUST** return a successful response.
 
 #### Updating To-Many Relationships
 
+If the server allows independent modifications of relationships...
+
+A server **MUST** respond to `PATCH`, `POST`, and `DELETE` requests for the to-many relationship URL.
+
+For all request types, the body **MUST** contain a `data` member whose value is an empty array or an array of resource identifier objects.
+
+If a client makes a `PATCH` request, the server **MUST** either completely replace every member of the relationship, return an appropriate error response if some resources can not be found or accessed, or return a `403 Forbidden` response if complete replacement is not allowed by the server.
+
+The following request replaces every tag for a book:
+
+```http
+PATCH /books/1/tags HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "data": [
+    { "id": "13" },
+    { "id": "43" }
+  ]
+}
+```
+
+The following request clears every tag for a book:
+
+```http
+PATCH /books/1/tags HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "data": []
+}
+```
+
+If a client makes a `POST` request, the server **MUST** add the specified members to the relationship unless they are already present.  If a given member is already in the relationship, the server **MUST NOT** add it again.
+
+If all of the specified resources can be added to, or are already present in, the relationship then the server **MUST** return a successful response.
+
+The following request adds the tag with ID `345` to the list of tags for the book with ID `1`:
+
+```http
+POST /books/1/tags HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "data": [
+    { "id": "345" }
+  ]
+}
+```
+
+If the client makes a `DELETE` request, the server **MUST** delete the specified members from the relationship or return a `403 Forbidden` response.  If all of the specified members resources are able to be removed from, or are already missing from, the relationship then the server **MUST** return a successful response.
+
+The following request removes tags with IDs `17` and `29` from the book with ID `1`:
+
+```http
+DELETE /books/1/tags HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "data": [
+    { "id": "17" },
+    { "id": "29" }
+  ]
+}
+```
+
+#### Responses
+
+##### 200 OK
+
+A server **MUST** return a `200 OK` status code if an update is successful.  The response document **MUST** include a representation of the updated relationship(s).
+
+##### 403 Forbidden
+
+A server **MUST** return `403 Forbidden` in responses to an unsupported request to update a relationship.
+
+##### Other Responses
+
+A server **MAY** respond with other HTTP status codes.
+
 ### Deleting Resources
+
+An individual resource can be deleted by making a `DELETE` request to the resource's URL:
+
+```http
+DELETE /books/1 HTTP/1.1
+Accept: application/json
+```
+
+#### Responses
+
+##### 204 No Content
+
+A server **MUST** return a `204 No Content` status code if a deletion request is successful and no content is returned.
+
+##### Other Responses
+
+A server **MAY** respond with other HTTP status codes.
 
 ## Query Parameters
 
