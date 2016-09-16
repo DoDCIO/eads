@@ -17,10 +17,6 @@ All timestamps are returned in ISO 8601 format:
 YYYY-MM-DDTHH:MM:SSZ
 ```
 
-### Versioning
-
-Servers
-
 ### Compact Representations
 
 When retrieving a list of [resource objects], the response will include a *subset* of the attributes for that resource.  This is the "compact" representation of the resource.  To obtain all attributes for a resource, retrieve the "full" representation.
