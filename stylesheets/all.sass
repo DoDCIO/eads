@@ -1,0 +1,389 @@
+@import "highlight"
+@import "compass"
+@import "fontello"
+@charset "utf-8"
+
+/** Config */
+
+$page-width: 955px
+$sidebar-width: 220px
+$page-padding: 20px
+
+$mobile-breakpoint: 800px
+
+$color-accent: rgb(11, 78, 34)
+$color-main: rgb(90, 90, 90)
+$color-med-rule: rgb(187, 187, 187)
+$color-light-rule: rgb(204, 204, 204)
+$color-masthead: rgb(235, 235, 235)
+
+$fonts-body: "Helvetica Neue", "Helvetica", Arial, "Open Sans", sans-serif
+$border-radius-main: 4px
+
+/** Mixins */
+
+%centerbox
+  display: block
+  max-width: $page-width
+  margin: 0 auto
+  padding: 0 $page-padding
+
+%distribute-children
+  text-align: justify
+
+  &:after
+    content: ''
+    display: inline-block
+    width: 100%
+
+%capitalize
+  text-transform: uppercase
+  letter-spacing: .2px
+
+// Create placeholder versions of zero-argument
+// (compass) mixins to minimize duplicate output.
+%hide-text
+  +hide-text
+
+%display-flex
+  +display-flex
+
+
+body
+  font-family: $fonts-body
+  font-size: 15px
+  line-height: 1.6
+  -webkit-font-smoothing: antialiased
+
+/** Typography */
+
+.headerlink
+  text-decoration: none
+  color: $color-light-rule
+
+h1, h2, h3, h4, h5
+  font-weight: 300
+  position: relative
+  left: -1em
+  padding-left: 1em
+
+  &:first-child
+    margin-top: 0
+
+  &:hover .headerlink, .headerlink:hover
+    font-size: inherit
+    &::after
+      margin-left: -.8em
+      width: .8em
+      position: absolute
+      content: "¶"
+
+h1
+  font-weight: 500
+  color: $color-accent
+
+h2
+  margin: 50px 0 15px 0
+  color: $color-main
+  font-size: 22px
+  line-height: 1.3
+
+h3
+  margin: 30px 0 15px 0
+  font-size: 18px
+
+h4
+  margin: 20px 0 10px 0
+  font-size: 16px
+
+h5
+  margin: 20px 0 10px 0
+  font-weight: 500
+  font-size: inherit
+
+p, table
+  line-height: 1.7333
+  margin: 0 0 13px 0
+
+th
+  text-align: left
+  padding-right: 1em
+
+a
+  color: $color-main
+
+blockquote
+  margin: 20px 0
+  padding: 10px 15px 0 15px
+  border-radius: $border-radius-main
+  color: lighten($color-main, 15%)
+  background: rgba($color-main, 0.04)
+  border: 1px solid $color-light-rule
+
+p > code, li > code
+  padding: 1px 4px
+  background: rgba(0, 0, 0, 0.06)
+  white-space: nowrap
+
+
+/** Navigation */
+
+.site-nav
+  font-weight: 500
+  background: $color-accent
+  border-bottom: 1px solid $color-light-rule
+
+  .nav-inner
+    @extend %centerbox
+
+  ul
+    @extend %display-flex
+    +justify-content(space-between)
+    list-style: none
+    margin: 0
+    padding: 8px 2px 8px
+
+    @media screen and (max-width: $mobile-breakpoint)
+      +flex-direction(column)
+      text-align: center
+
+  li
+    +flex(0 1 auto)
+
+  a
+    text-decoration: none
+    font-weight: 400
+    color: white
+    letter-spacing: .4px
+
+  .active
+    a
+      font-weight: 800
+      letter-spacing: .2px
+
+  .version .pill
+    display: inline-block
+    padding: 1px 6px
+    background-color: darken($color-accent, 4%)
+    font-size: 12px
+    font-weight: bold
+    color: white
+    border-radius: $border-radius-main
+    position: relative
+    top: -1px
+
+    .stable
+      @extend %capitalize
+      text-rendering: optimizeLegibility
+
+
+/** Header */
+
+header
+  .content
+    padding: 29px $page-padding 41px
+    background: $color-masthead
+    border-bottom: 1px solid $color-light-rule
+
+  h1
+    @extend %hide-text
+    text-align: center
+    height: 130px
+    margin: 0
+    padding: 0
+    left: -2px // optical centering
+    background: url('../images/jsonapi.png') no-repeat center
+    background-size: contain
+
+  h2
+    text-align: center
+    margin: 15px 0 40px 0
+    padding: 0
+    left: 0
+    font-size: 124%
+    font-weight: bold
+    text-transform: uppercase
+
+  .quicklinks
+    @extend %centerbox
+    @extend %display-flex
+    +align-items(center)
+    +justify-content(center)
+
+  .quicklinks a
+    display: block
+    margin: 5px 15px
+    padding: 6px 25px
+    border-radius: $border-radius-main
+    border: 1px solid $color-med-rule
+    background: white
+    text-decoration: none
+    text-align: center
+
+  @media screen and (max-width: $mobile-breakpoint)
+    .content
+      padding-top: 20px
+      padding-bottom: 20px
+
+    h1
+      margin: 0 auto 20px auto
+      max-width: 100%
+
+    .quicklinks
+      +flex-direction(column)
+
+
+/** Footer */
+
+footer
+  padding: 0 ($page-padding - 2px)
+  text-align: center
+  font-size: 12px
+  color: $color-main
+
+  .site-wrapper
+    margin-top: 0
+    margin-bottom: 0
+    line-height: 0
+    @extend %distribute-children
+    padding: 8px 2px
+    border-top: 1px solid $color-med-rule
+
+  span
+    display: inline-block
+    vertical-align: middle
+
+  .license
+    a
+      display: block
+      padding: .75em
+
+  .social-links
+    @extend %distribute-children
+    width: 9em
+    position: relative
+    left: .75em
+
+    span
+      @extend %hide-text
+      width: 0
+
+    // embiggen link targets
+    i
+      width: 1em
+      padding: .75em
+      display: inline-block
+
+/** Content */
+
+.site-wrapper
+  @extend %centerbox
+  +clearfix
+  margin-top: 50px
+  margin-bottom: 50px
+
+.sidebar
+  width: $sidebar-width
+  margin-top: 8px
+  float: left
+
+  // width must be set explicity for when
+  // these children becomes position: fixed
+  h1
+    font-size: 15px
+    background-color: white
+    z-index: 1
+    width: $sidebar-width
+    color: inherit
+    font-weight: 300
+
+  nav > ol
+    width: $sidebar-width
+    overflow-y: auto
+
+  #version-picker-wrapper
+    width: $sidebar-width
+    margin-bottom: 20px
+    display: flex
+    flex-direction: row
+
+    label
+      display: none
+      margin-right: .5em
+
+    .version-picker
+      flex-direction: row
+      flex-grow: 1
+
+  // On small viewports, but only after we've shrunk the
+  // main column to below a comfortable size (that's the -110px)..
+  @media screen and (max-width: $page-width + ($page-padding * 2) - 110px)
+    // Hide the sidebar's content, except for the version picker
+    nav > :not(#version-picker-wrapper)
+      display: none
+
+    // don't float or pad the nav the sidebar so that the version
+    // picker, which we are showing, goes full width
+    float: none
+    width: auto
+    nav
+      padding-right: 0
+
+    // bring back the label, which makes the version switcher's function
+    // a bit clearer when the sidebar isn't visible to offer context.
+    #version-picker-wrapper
+      width: auto
+      label
+        display: inline
+
+// Push the content to the right, except on small viewports
+// The padding-left: calc(...) functions to grow the gutter gradually by 25px
+// as the window grows. If this isn't supported, it's ok; the gutter width will
+// just jump to its final size at the next media query.
+@media screen and (min-width: $page-width + ($page-padding * 2) - 109px)
+  .sidebar + .content
+    margin-left: $sidebar-width + 15px
+    padding-left: calc(100vw - #{$page-width + ($page-padding * 2) - 109px})
+
+@media screen and (min-width: $page-width + ($page-padding * 2) - 94px)
+  .sidebar + .content
+    padding-left: 25px
+
+/** Document outline */
+
+.document-outline
+  padding-right: 40px
+  font-size: 13px
+
+  ol
+    list-style: none
+    margin: 0
+    padding: 0
+
+    li ol
+      padding: 0 0 0 10px
+
+  a
+    text-decoration: none
+    color: inherit
+    display: block
+
+    &:hover
+      color: $color-main
+
+.document-outline > ol > li
+  padding: 0 0 5px 0
+
+
+/** Code blocks highlighting */
+
+.highlight
+  border-radius: $border-radius-main
+  position: relative
+  padding: 10px 15px
+  background: #f9f9f9
+  border: 1px solid #d1d1d1
+  font-size: 12px
+  line-height: 16px
+  margin: 2em 0
+  font-family: Menlo, monospace
