@@ -7,15 +7,96 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 interpreted as described in
 [RFC2119](http://tools.ietf.org/html/rfc2119).
 
+## Using the API
+
+All API access **MUST** be over HTTPS.
+
+### Content Negotiation
+
+All data **MUST** be sent and received as JSON.
+
+Clients and Servers **MUST** send all data in request/response documents with the header:
+
+```http
+Content-Type: application/json
+```
+
+Servers **MUST** respond with a `415 Unsupported Media Type` status code if a request specifies a `Content-Type` other than `application/json`.
+
+Clients **SHOULD** specify a response media type of JSON with the header:
+
+```http
+Accept: application/json
+```
+
+> If the `Accept` header is not sent, JSON will be sent back by default.
+
+Servers **MUST** respond with a `406 Not Acceptable` status code if a request specifies `Accept` other than `application/json`.
+
+### Versioning
+
+Clients **MUST** specify the desired version of the API as part of the request path: `https://[BASE_URL]/[VERSION]/[RESOURCE]`
+
+```
+https://api.example.com/v1/books
+```
+
+Servers **MUST** version their APIs.  Version names **MUST** be whole number integers preceded by the letter v: `v1`, `v2`, `v3`...
+
+Servers **MUST** respond with a `406 Not Acceptable` status code if a request specifies an unsupported version.
+
 ## Schema
 
-All API access is over HTTPS and all data is sent and received as JSON.
+This section describes the structure of request/response documents.  These documents are defined in [JavaScript Object Notation (JSON)](https://tools.ietf.org/html/rfc7159).
 
 All timestamps are returned in ISO 8601 format:
 
 ```
 YYYY-MM-DDTHH:MM:SSZ
 ```
+
+### Top Level
+
+A JSON object **MUST** be at the root of every request/response document.  This object defines a document's "top level".
+
+A document **MUST** contain at least one of the following top-level members:
+
+* `meta`: a [meta object][meta objects] containing information about the data being returned.
+* `data`: the resource(s) being sent/returned.
+* `error`: an [error object][error objects] containing information about any or all errors that occurred during the request.
+
+The members `data` and `error` **MUST NOT** coexist in the same document.
+
+The `data` member **MUST** contain either:
+
+* a single [resource object][resource objects] for requests targeting single resources
+* an array of [resource objects] or an empty array for requests targeting resource collections
+
+### <a href="#document-resource-objects" id="document-resource-objects" class="headerlink"></a> Resource Objects
+
+A resource object **MUST** contain at least the following top-level members:
+
+* `id`: The unique identifier for the resource [string].
+* `href`: The unique url for the resource [string].
+
+In addition, a resource object **MAY** contain any of these top-level members:
+
+* `createdAt`: The timestamp the resource was created [string (ISO 8601)].
+* `updatedAt`: The timestamp the resource was last updated [string (ISO 8601)].
+
+### <a href="#document-meta-objects" id="document-meta-objects" class="headerlink"></a> Meta Objects
+
+A meta object is used to provide additional information about the data being returned.
+
+A meta object **MUST** contain at least the following top-level members:
+
+* `resourceType`: The type of resource being returned in the `data` member [string].
+* `responseTime`: The execution time of the request in milliseconds [integer].
+
+In addition, a meta object **MAY** contain any of these top-level members:
+
+* `user`: The user ID of the user making the request [string].
+* `date`: The date/time the request was received [ISO 8601 Datetime w/ Timezone].
 
 ### Compact Representations
 
@@ -76,81 +157,6 @@ Accept: application/json
 ```
 
 > Sub-resources included in the response will be compact representations.
-
-## Content Negotiation
-
-### Client Responsibilities
-
-Clients **MUST** send all data in request documents with the header: `Content-Type: application/json`.
-
-Clients **SHOULD** specify a response media type of JSON with the header: `Accept: application/json;`
-
-> If the `Accept` header is not sent, JSON will be sent back by default.
-
-Clients **MUST** specify the desired version of the API as part of the request path: `https://[BASE_URL]/[VERSION]/[RESOURCE]`
-
-```
-https://api.example.com/v1/books
-```
-
-### Server Responsibilities
-
-Servers **MUST** send all data in response documents with the header `Content-Type: application/json`.
-
-Servers **MUST** respond with a `415 Unsupported Media Type` status code if a request specifies a `Content-Type` other than `Content-Type: application/json`.
-
-Servers **MUST** respond with a `406 Not Acceptable` status code if a request specifies `Accept` other than `Accept: application/json;`.
-
-Servers **MUST** version their APIs.  Version names **MUST** be whole number integers preceded by the letter v: `v1`, `v2`, `v3`...
-
-Servers **MUST** respond with a `406 Not Acceptable` status code if a request specifies an unsupported version.
-
-## Document Structure
-
-This section describes the structure of request/response documents.  These documents are defined in [JavaScript Object Notation (JSON)](https://tools.ietf.org/html/rfc7159).
-
-### Top Level
-
-A JSON object **MUST** be at the root of every request/response document.  This object defines a document's "top level".
-
-A document **MUST** contain at least one of the following top-level members:
-
-* `meta`: a meta object containing information about the data being returned
-* `data`: the resource(s) being returned
-* `error`: an [error object][error objects] containing information about any or all errors that occurred during the request
-
-The members `data` and `error` **MUST NOT** coexist in the same document.
-
-The `data` member **MUST** contain either:
-
-* a single [resource object][resource objects] for requests targeting single resources
-* an array of [resource objects] or an empty array for requests targeting resource collections
-
-### <a href="#document-resource-objects" id="document-resource-objects" class="headerlink"></a> Resource Objects
-
-A resource object **MUST** contain at least the following top-level members:
-
-* `id`: The unique identifier for the resource [string].
-* `href`: The unique url for the resource [string].
-
-In addition, a resource object **MAY** contain any of these top-level members:
-
-* `createdAt`: The timestamp the resource was created [string (ISO 8601)].
-* `updatedAt`: The timestamp the resource was last updated [string (ISO 8601)].
-
-### <a href="#document-meta-objects" id="document-meta-objects" class="headerlink"></a> Meta Objects
-
-A meta object is used to provide additional information about the data being returned.
-
-A meta object **MUST** contain at least the following top-level members:
-
-* `resourceType`: The type of resource being returned in the `data` member [string].
-* `responseTime`: The execution time of the request in milliseconds [integer].
-
-In addition, a meta object **MAY** contain any of these top-level members:
-
-* `user`: The user ID of the user making the request [string].
-* `date`: The date/time the request was received [ISO 8601 Datetime w/ Timezone].  
 
 ## Retrieving Data
 
@@ -731,4 +737,5 @@ An example error object:
 ```
 
 [resource objects]: #document-resource-objects
+[meta objects]: #document-meta-objects
 [error objects]: #error-objects
