@@ -35,13 +35,13 @@ Servers **MUST** respond with a `406 Not Acceptable` status code if a request sp
 
 ### Versioning
 
+Servers **MUST** version their APIs.  Version names **MUST** be whole number integers preceded by the letter v: `v1`, `v2`, `v3`...
+
 Clients **MUST** specify the desired version of the API as part of the request path: `https://[BASE_URL]/[VERSION]/[RESOURCE]`
 
 ```
 https://api.example.com/v1/books
 ```
-
-Servers **MUST** version their APIs.  Version names **MUST** be whole number integers preceded by the letter v: `v1`, `v2`, `v3`...
 
 Servers **MUST** respond with a `406 Not Acceptable` status code if a request specifies an unsupported version.
 
