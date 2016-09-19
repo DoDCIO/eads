@@ -1,4 +1,7 @@
 ## Introduction
+The Enterprise APIs for Data Sharing (EADS) effort is defining a set of best practices and lessons learned for implementing web-based APIs (RESTful APIs) from existing DoD systems. This EADS Handbook contains recommended tactics, techniques, and procedures (TTPs) when making this digital transformation.
+
+In the spirit of transparency and collaboration, the EADS team is working with the larger DoD Technical Community (in a [public GitHub repository](https://github.com/540co/eads)) to help define a solution that best fits the DoD's needs.  Please refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) to see how you can contribute to this project.
 
 ## Conventions
 
