@@ -56,6 +56,14 @@ Servers **MUST** respond with a `406 Not Acceptable` status code if a request sp
 
 Servers **MUST** increment the version number any time breaking changes are introduced.
 
+### <a href="#authentication" id="authentication" class="headerlink"></a> Authentication
+
+*Coming Soon...*
+
+### <a href="#documentation" id="documentation" class="headerlink"></a> Documentation
+
+*Coming Soon...*
+
 ## <a href="#schema" id="schema" class="headerlink"></a> Schema
 
 This section describes the structure of request/response documents.  These documents are defined in [JavaScript Object Notation (JSON)](https://tools.ietf.org/html/rfc7159).
@@ -109,7 +117,7 @@ In addition, a meta object **MAY** contain any of these top-level members:
 * `user`: The user ID of the user making the request [string].
 * `date`: The date/time the request was received [ISO 8601 Datetime w/ Timezone].
 
-### Summary Representations
+### <a href="#summary-representations" id="summary-representations" class="headerlink"></a> Summary Representations
 
 When retrieving a list of [resource objects], the response will include a *subset* of the attributes for that resource.  This is the "summary" representation of the resource.  To obtain all attributes for a resource, retrieve the "detailed" representation.
 
@@ -134,7 +142,7 @@ Accept: application/json
 }
 ```
 
-### Detailed Representations
+### <a href="#detailed-representations" id="detailed-representations" class="headerlink"></a> Detailed Representations
 
 When retrieving an individual resource, the response will typically include *all* attributes for that resource.  This is the "detailed" representation of the resource.
 
@@ -169,7 +177,7 @@ Accept: application/json
 
 Sub-resources included in a detailed representation **MUST** use the summary representation
 
-### Nested Collection Representations
+### <a href="#nested-representations" id="nested-representations" class="headerlink"></a> Nested Collection Representations
 
 To-Many relationships, when included in a detailed representation, **MUST** be an object with the following required fields:
 
@@ -196,13 +204,13 @@ Accept: application/json
 }
 ```
 
-## Retrieving Data
+## <a href="#retrieving-data" id="retrieving-data" class="headerlink"></a> Retrieving Data
 
 Data can be retrieved by sending a `GET` request to an endpoint.
 
 Responses can be further refined with the optional features described below.
 
-### Retrieving Resources
+### <a href="#retrieving-resources" id="retrieving-resources" class="headerlink"></a> Retrieving Resources
 
 There are 2 ways to retrieve resources:
 
@@ -316,7 +324,7 @@ A server **MAY** respond with other HTTP status codes.
 
 A server **MAY** include error details with error responses.
 
-### Partial Responses
+### <a href="#partial-resources" id="partial-resources" class="headerlink"></a> Partial Resources
 
 A client **MAY** request that an endpoint return only specific fields in the response by including a `fields` query parameter.
 
@@ -335,7 +343,7 @@ GET /books?fields=name,yearPublished HTTP/1.1
 Accept: application/json
 ```
 
-### Sorting
+### <a href="#sorting" id="sorting" class="headerlink"></a> Sorting
 
 A server **MAY** choose to support requests to sort resource collections based on one or more "sort fields".
 
@@ -366,7 +374,7 @@ A client **MUST** only specify sort fields available in the detailed representat
 
 If the server does not support sorting as specified in the query parameter `sort`, it **MUST** return `400 Bad Request`.
 
-### Pagination
+### <a href="#pagination" id="pagination" class="headerlink"></a> Pagination
 
 A server **MAY** choose to limit the number of resources returned in a response.
 
@@ -406,7 +414,7 @@ Servers **MUST** define `default` and `maximum` values for `limit`.
 
 Servers **MUST** return a `400 Bad Request` if the value specified by the `offset` query parameter exceeds the total resource count of the resource being retrieved.
 
-### Filtering
+### <a href="#filtering" id="filtering" class="headerlink"></a> Filtering
 
 A server **MAY** choose to support requests to filter resource collections based on one or more criterion.
 
@@ -427,7 +435,7 @@ Operator | Description | URL Encoded Operator | Examples
 >=< | inclusively between | %3E%3D%3C | The year published is at least 2000 and at most 2016<br /> `?filters=yearPublished%3E%3D%3C2000;2016`
 >< | exclusively between | %3E%3C | The year published is greater than 2000 and less than 2016<br /> `?filters=yearPublished%3E%3C2000;2016`
 
-### Multiple Conditions
+#### Multiple Conditions
 
 Multiple conditions will be accommodated by separating single conditions with a comma (',').
 
@@ -439,7 +447,7 @@ To specify fields for nested resources, use dot notation for the field names.  F
 
 A client **MUST** only specify filter fields available in the detailed representation for a resource.
 
-### Special Characters
+#### Special Characters
 
 As the comma and semi-colon are assigned special meaning, any instance of the following characters contained within individual values must be escaped.
 
@@ -453,13 +461,13 @@ backslash | \ | \\\
 [RESOURCE_URL]?filters=fullName%3D%3DMontoya\,Inigo
 ```
 
-## Creating, Updating, and Deleting Resources
+## <a href="#cud-resources" id="cud-resources" class="headerlink"></a> Creating, Updating, and Deleting Resources
 
 A server **MAY** allow resources to be created.  It **MAY** also allow existing resources to be modified or deleted.
 
 A request **MUST** completely succeed or fail (in a single "transaction").  No partial updates are allowed.
 
-### Creating Resources
+### <a href="#creating-resources" id="creating-resources" class="headerlink"></a> Creating Resources
 
 A resource can be created by sending a `POST` request to the collections endpoint for that resource type.  The request **MUST** include a single [resource object][resource objects].
 
@@ -539,7 +547,7 @@ A server **MAY** return `403 Forbidden` in response to an unsupported request to
 
 A server **MAY** respond with other HTTP status codes.
 
-### Updating Resources
+### <a href="#updating-resources" id="updating-resources" class="headerlink"></a> Updating Resources
 
 A resource can be updated by sending a `PATCH` request to the URL that represents the resource.
 
@@ -595,7 +603,7 @@ A server **MUST** return `404 Not Found` when processing a request to modify a r
 
 A server **MAY** respond with other HTTP status codes.
 
-### Updating Relationships
+### <a href="#updating-relationships" id="updating-relationships" class="headerlink"></a> Updating Relationships
 
 Although relationships can be modified along with resources, the server **MAY** provide links to modify them independently.
 
@@ -724,7 +732,7 @@ A server **MUST** return `403 Forbidden` in responses to an unsupported request 
 
 A server **MAY** respond with other HTTP status codes.
 
-### Deleting Resources
+### <a href="#deleting-resources" id="deleting-resources" class="headerlink"></a> Deleting Resources
 
 An individual resource can be deleted by making a `DELETE` request to the resource's URL:
 
@@ -743,13 +751,13 @@ A server **MUST** return a `204 No Content` status code if a deletion request is
 
 A server **MAY** respond with other HTTP status codes.
 
-## Query Parameters
+## <a href="#query-parameters" id="query-parameters" class="headerlink"></a> Query Parameters
 
 If a server encounters a query parameter that it does not know how to process, it **MUST** return `400 Bad Request`
 
-## Errors
+## <a href="#errors" id="errors" class="headerlink"></a> Errors
 
-### Processing Errors
+### <a href="#processing-errors" id="processing-errors" class="headerlink"></a> Processing Errors
 
 A server **MAY** choose to stop processing as soon as a problem is encountered, or it **MAY** continue processing and encounter multiple problems.
 
