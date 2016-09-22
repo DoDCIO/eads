@@ -16,7 +16,9 @@ All API access **MUST** be over HTTPS.
 
 ### Content Negotiation
 
-All data **MUST** be sent and received as JSON.
+Clients **MUST** send data as JSON.  XML **MUST NOT** be used.
+
+Servers **SHOULD** return data using JSON.  Alternative formats, such as PDF and CSV **MAY** be allowed.  XML **MUST NOT** be used.
 
 Clients and Servers **MUST** send all data in request/response documents with the header:
 
@@ -24,7 +26,7 @@ Clients and Servers **MUST** send all data in request/response documents with th
 Content-Type: application/json
 ```
 
-Servers **MUST** respond with a `415 Unsupported Media Type` status code if a request specifies a `Content-Type` other than `application/json`.
+Servers **MUST** respond with a `415 Unsupported Media Type` status code if a client specifies a `Content-Type` other than `application/json`.
 
 Clients **SHOULD** specify a response media type of JSON with the header:
 
@@ -34,7 +36,7 @@ Accept: application/json
 
 > If the `Accept` header is not sent, JSON will be sent back by default.
 
-Servers **MUST** respond with a `406 Not Acceptable` status code if a request specifies `Accept` other than `application/json`.
+Servers **MUST** respond with a `406 Not Acceptable` status code if a client requests an unsupported response format.
 
 ### Versioning
 
@@ -47,6 +49,8 @@ https://api.example.com/v1/books
 ```
 
 Servers **MUST** respond with a `406 Not Acceptable` status code if a request specifies an unsupported version.
+
+Servers **MUST** increment the version number any time breaking changes are introduced.
 
 ## Schema
 
@@ -101,9 +105,9 @@ In addition, a meta object **MAY** contain any of these top-level members:
 * `user`: The user ID of the user making the request [string].
 * `date`: The date/time the request was received [ISO 8601 Datetime w/ Timezone].
 
-### Compact Representations
+### Summary Representations
 
-When retrieving a list of [resource objects], the response will include a *subset* of the attributes for that resource.  This is the "compact" representation of the resource.  To obtain all attributes for a resource, retrieve the "full" representation.
+When retrieving a list of [resource objects], the response will include a *subset* of the attributes for that resource.  This is the "summary" representation of the resource.  To obtain all attributes for a resource, retrieve the "detailed" representation.
 
 ```http
 GET /books HTTP/1.1
@@ -126,9 +130,9 @@ Accept: application/json
 }
 ```
 
-### Full Representations
+### Detailed Representations
 
-When retrieving an individual resource, the response will typically include *all* attributes for that resource.  This is the "full" representation of the resource.
+When retrieving an individual resource, the response will typically include *all* attributes for that resource.  This is the "detailed" representation of the resource.
 
 ```http
 GET /books/1 HTTP/1.1
@@ -159,7 +163,34 @@ Accept: application/json
 }
 ```
 
-> Sub-resources included in the response will be compact representations.
+Sub-resources included in a detailed representation **MUST** use the summary representation
+
+### Nested Collection Representations
+
+To-Many relationships, when included in a detailed representation, **MUST** be an object with the following required fields:
+
+* `href`: The url for the nested collection [string].
+* `totalCount`: The total number of items in the collection [integer].
+
+For example, when including reviews for a book, the reviews relationship would be included as follows:
+
+```http
+GET /books/1 HTTP/1.1
+Accept: application/json
+
+{
+  "meta": {},
+  "data": {
+    "id": "1",
+    "href": "/books/1",
+    "title": "The Greatest Book in the World",
+    "reviews": {
+      "href": "/books/1/reviews",
+      "totalCount": 382
+    }
+  }
+}
+```
 
 ## Retrieving Data
 
@@ -287,7 +318,13 @@ A client **MAY** request that an endpoint return only specific fields in the res
 
 The value of the `fields` parameter **MUST** be a comma-separated list that refers to the name(s) of the fields to be returned.
 
-If a client requests a specific set of fields using the `fields` query parameter, an endpoint **MUST NOT** include additional fields in resource objects in its response.
+To return a subset of fields for nested resources, use dot notation for the field names.  For example, to return only the name of an author, specify the field name as `author.name`.
+
+If a client requests a specific set of fields using the `fields` query parameter, an endpoint **MUST** include only the mandatory and specified fields.  Additional fields **MUST NOT** be included in the response.
+
+A client **MUST** only specify fields available in the detailed representation for a resource.
+
+A server **MUST** respond with `400 Bad Request` when provided invalid or unavailable field names.
 
 ```http
 GET /books?fields=name,yearPublished HTTP/1.1
@@ -318,6 +355,11 @@ The sort order for each sort field **MUST** be ascending unless it is prefixed w
 GET /books?sort=name,-yearPublished HTTP/1.1
 Accept: application/json
 ```
+
+To specify fields for nested resources, use dot notation for the field names.  For example, to sort by the name of an author, specify the sort field name as `author.name`.
+
+A client **MUST** only specify sort fields available in the detailed representation for a resource.
+
 If the server does not support sorting as specified in the query parameter `sort`, it **MUST** return `400 Bad Request`.
 
 ### Pagination
@@ -356,6 +398,8 @@ GET /books?limit=20&offset=40 HTTP/1.1
 Accept: application/json
 ```
 
+Servers **MUST** define `default` and `maximum` values for `limit`.
+
 Servers **MUST** return a `400 Bad Request` if the value specified by the `offset` query parameter exceeds the total resource count of the resource being retrieved.
 
 ### Filtering
@@ -386,6 +430,10 @@ Multiple conditions will be accommodated by separating single conditions with a 
 ```
 [RESOURCE_URL]?filters=attribute%3D%3Dvalue,attribute2%3E%3CminValue;maxValue
 ```
+
+To specify fields for nested resources, use dot notation for the field names.  For example, to filter using the name of an author, specify the filter field name as `author.name`.
+
+A client **MUST** only specify filter fields available in the detailed representation for a resource.
 
 ### Special Characters
 
