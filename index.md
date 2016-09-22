@@ -2,23 +2,23 @@
 layout: landing
 ---
 
-## Introduction
+## <a href="#introduction" id="introduction" class="headerlink"></a> Introduction
 The Enterprise APIs for Data Sharing (EADS) effort is defining a set of best practices and lessons learned for implementing web-based APIs (RESTful APIs) from existing DoD systems. This EADS Handbook contains recommended tactics, techniques, and procedures (TTPs) when making this digital transformation.
 
 In the spirit of transparency and collaboration, the EADS team is working with the larger DoD Technical Community (in a [public GitHub repository](https://github.com/540co/eads)) to help define a solution that best fits the DoD's needs.  Please refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) to see how you can contribute to this project.
 
-## Conventions
+## <a href="#conventions" id="conventions" class="headerlink"></a> Conventions
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in
 [RFC2119](http://tools.ietf.org/html/rfc2119).
 
-## Using the API
+## <a href="#using-the-api" id="using-the-api" class="headerlink"></a> Using the API
 
 All API access **MUST** be over HTTPS.
 
-### Content Negotiation
+### <a href="#content-negotiation" id="content-negotiation" class="headerlink"></a> Content Negotiation
 
 Clients **MUST** send data as JSON.  XML **MUST NOT** be used.
 
@@ -42,7 +42,7 @@ Accept: application/json
 
 Servers **MUST** respond with a `406 Not Acceptable` status code if a client requests an unsupported response format.
 
-### Versioning
+### <a href="#versioning" id="versioning" class="headerlink"></a> Versioning
 
 Servers **MUST** version their APIs.  Version names **MUST** be whole number integers preceded by the letter v: `v1`, `v2`, `v3`...
 
@@ -56,7 +56,7 @@ Servers **MUST** respond with a `406 Not Acceptable` status code if a request sp
 
 Servers **MUST** increment the version number any time breaking changes are introduced.
 
-## Schema
+## <a href="#schema" id="schema" class="headerlink"></a> Schema
 
 This section describes the structure of request/response documents.  These documents are defined in [JavaScript Object Notation (JSON)](https://tools.ietf.org/html/rfc7159).
 
@@ -66,7 +66,7 @@ All timestamps are returned in ISO 8601 format:
 YYYY-MM-DDTHH:MM:SSZ
 ```
 
-### Top Level
+### <a href="#top-level" id="top-level" class="headerlink"></a> Top Level
 
 A JSON object **MUST** be at the root of every request/response document.  This object defines a document's "top level".
 
@@ -83,7 +83,7 @@ The `data` member **MUST** contain either:
 * a single [resource object][resource objects] for requests targeting single resources
 * an array of [resource objects] or an empty array for requests targeting resource collections
 
-### <a href="#document-resource-objects" id="document-resource-objects" class="headerlink"></a> Resource Objects
+### <a href="#resource-objects" id="resource-objects" class="headerlink"></a> Resource Objects
 
 A resource object **MUST** contain at least the following top-level members:
 
@@ -95,7 +95,7 @@ In addition, a resource object **MAY** contain any of these top-level members:
 * `createdAt`: The timestamp the resource was created [string (ISO 8601)].
 * `updatedAt`: The timestamp the resource was last updated [string (ISO 8601)].
 
-### <a href="#document-meta-objects" id="document-meta-objects" class="headerlink"></a> Meta Objects
+### <a href="#meta-objects" id="meta-objects" class="headerlink"></a> Meta Objects
 
 A meta object is used to provide additional information about the data being returned.
 
@@ -791,6 +791,6 @@ An example error object:
 }
 ```
 
-[resource objects]: #document-resource-objects
-[meta objects]: #document-meta-objects
+[resource objects]: #resource-objects
+[meta objects]: #meta-objects
 [error objects]: #error-objects

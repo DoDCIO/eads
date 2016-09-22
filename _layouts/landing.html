@@ -24,7 +24,7 @@
     <![endif]-->
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target=".scrollspy">
 
     <!-- Fixed navbar -->
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -46,25 +46,31 @@
       </div>
     </nav>
 
-    <div class="container" role="main">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 .scrollspy" role="complementary">
+          <nav id="document-outline" class="hidden-sm hidden-xs" data-spy="affix"></nav>
+        </div> <!-- /col-md-3 complementary -->
+        <div class="col-md-9" role="main">
+          <!-- Main jumbotron for a primary marketing message or call to action -->
+          <div class="jumbotron hidden">
+            <h1>Theme example</h1>
+            <p>This is a template showcasing the optional theme stylesheet included in Bootstrap. Use it as a starting point to create something more unique by building on or modifying it.</p>
+          </div>
 
-      <!-- Main jumbotron for a primary marketing message or call to action -->
-      <div class="jumbotron hidden">
-        <h1>Theme example</h1>
-        <p>This is a template showcasing the optional theme stylesheet included in Bootstrap. Use it as a starting point to create something more unique by building on or modifying it.</p>
-      </div>
-
-      <div class="content">
-        {{ content }}
-      </div>
-
-    </div> <!-- /container -->
+          <div class="content">
+            {{ content }}
+          </div>
+        </div> <!-- /col-md-9 main -->
+      </div><!-- /row -->
+    </div><!-- /container -->
 
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://cdn.jsdelivr.net/jquery/3.1.0/jquery.min.js"></script>
+    <script src="javascripts/navigation.js"></script>
     <script src="javascripts/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
