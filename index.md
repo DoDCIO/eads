@@ -58,11 +58,13 @@ Servers **MUST** increment the version number any time breaking changes are intr
 
 ### <a href="#authentication" id="authentication" class="headerlink"></a> Authentication
 
-*Coming Soon...*
+Servers **SHOULD** use OAuth 2.0 [RFC 6749](https://tools.ietf.org/html/rfc6749) for API authentication.
 
 ### <a href="#documentation" id="documentation" class="headerlink"></a> Documentation
 
-*Coming Soon...*
+Servers **SHOULD** use the [OpenAPI Specification (fka The Swagger Specification)](https://github.com/OAI/OpenAPI-Specification) to document the API.
+
+Servers **SHOULD** place this documentation at the root path of the API.  For example, documentation for version 1 of an API should be located at: `https://[BASE_URL]/v1`
 
 ## <a href="#schema" id="schema" class="headerlink"></a> Schema
 
