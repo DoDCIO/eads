@@ -7,6 +7,10 @@ The Enterprise APIs for Data Sharing (EADS) effort is defining a set of best pra
 
 In the spirit of transparency and collaboration, the EADS team is working with the larger DoD Technical Community (in a [public GitHub repository](https://github.com/540co/eads)) to help define a solution that best fits the DoD's needs.  Please refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) to see how you can contribute to this project.
 
+### <a href="#what-is-rest" id="what-is-rest" class="headerlink"></a> What is REST?
+
+*Coming soon...*
+
 ## <a href="#conventions" id="conventions" class="headerlink"></a> Conventions
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
@@ -17,6 +21,10 @@ interpreted as described in
 ## <a href="#using-the-api" id="using-the-api" class="headerlink"></a> Using the API
 
 All API access **MUST** be over HTTPS.
+
+### <a href="#cors" id="cors" class="headerlink"></a> Cross-Origin Resource Sharing (CORS)
+
+*Coming soon...*
 
 ### <a href="#content-negotiation" id="content-negotiation" class="headerlink"></a> Content Negotiation
 
