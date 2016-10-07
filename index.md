@@ -24,7 +24,45 @@ All API access **MUST** be over HTTPS.
 
 ### <a href="#cors" id="cors" class="headerlink"></a> Cross-Origin Resource Sharing (CORS)
 
-*Coming soon...*
+An important concept in web application security is the [same-origin policy](https://en.wikipedia.org/wiki/Same-origin_policy).  This policy allows scripts in one web page to access data in another web page only if they both have the same origin.  The origin is defined as the combination of URI scheme, hostname, and port number.
+
+With the increasing popularity of JavaScript frameworks and heavier reliance on client-side (browser) applications, it becomes necessary to allow these apps to access resources from different origins... CORS to the rescue.
+
+[Cross-origin resource sharing (CORS)](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) allows restricted resources to be requested from a domain other than the domain from which the resource originated.
+
+Servers **SHOULD** respond with the `Access-Control-Allow-Origin` header indicating which origins are allowed.
+
+```http
+Access-Control-Allow-Origin: http://www.example.com
+```
+
+A wildcard may be specified to indicate all origins are allowed:
+
+```http
+Access-Control-Allow-Origin: *
+```
+
+In addition to specifying the allowed origins, servers **SHOULD** specify allowed HTTP methods and HTTP headers as follows:
+
+To allow `GET` `POST` `PUT` and `DELETE` methods, the following header would be specified:
+
+```http
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+```
+
+To allow `Content-Type`, `Accept`, and `Authorization` headers, the following header would be specified:
+
+```http
+Access-Control-Allow-Headers: Content-Type, Accept, Authorization
+```
+
+A wildcard may be specified to allow all headers:
+
+```http
+Access-Control-Allow-Headers: *
+```
+
+A server **MAY** specify additional CORS headers.
 
 ### <a href="#content-negotiation" id="content-negotiation" class="headerlink"></a> Content Negotiation
 
