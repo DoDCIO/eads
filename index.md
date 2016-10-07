@@ -1,5 +1,5 @@
 ---
-layout: landing
+layout: default
 ---
 
 ## <a href="#introduction" id="introduction" class="headerlink"></a> Introduction
