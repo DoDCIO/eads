@@ -479,7 +479,7 @@ Operator | Description | URL Encoded Operator | Examples
 > | greater than | %3E | The year published is greater than 2000<br /> `?filters=yearPublished%3E2000`
 < | less than | %3C | The year published is less than 2016<br /> `?filters=yearPublished%3C2016`
 >= | greater than or equal | %3E%3D | The year published is greater than or equal to 2000<br /> `?filters=yearPublished%3E%3D2000`
-<= | less than or equal | %3C%3D | The year published is less than or equal to 2016<br /> `?filters=yearPublished%3C%3D2000`
+<= | less than or equal | %3C%3D | The year published is less than or equal to 2016<br /> `?filters=yearPublished%3C%3D2016`
 >=< | inclusively between | %3E%3D%3C | The year published is at least 2000 and at most 2016<br /> `?filters=yearPublished%3E%3D%3C2000;2016`
 >< | exclusively between | %3E%3C | The year published is greater than 2000 and less than 2016<br /> `?filters=yearPublished%3E%3C2000;2016`
 
