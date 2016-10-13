@@ -15,7 +15,7 @@
 # in the templates via {{ site.myvariable }}.
 title: EADS Handbook
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://example.com" # the base hostname & protocol for your site
+url: "http://eads.540.co" # the base hostname & protocol for your site
 
 # Build settings
 markdown: kramdown
