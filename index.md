@@ -520,13 +520,7 @@ backslash | \ | \\\
 [RESOURCE_URL]?filters=fullName%3D%3DMontoya\,Inigo
 ```
 
-## <a href="#cud-resources" id="cud-resources" class="headerlink"></a> Creating, Updating, and Deleting Resources
-
-A server **MAY** allow resources to be created.  It **MAY** also allow existing resources to be modified or deleted.
-
-A request **MUST** completely succeed or fail (in a single "transaction").  No partial updates are allowed.
-
-### <a href="#creating-resources" id="creating-resources" class="headerlink"></a> Creating Resources
+## <a href="#creating-resources" id="creating-resources" class="headerlink"></a> Creating Resources
 
 A resource can be created by sending a `POST` request to the collections endpoint for that resource type.  The request **MUST** include a single [resource object][resource objects].
 
@@ -606,7 +600,7 @@ A server **MAY** return `403 Forbidden` in response to an unsupported request to
 
 A server **MAY** respond with other HTTP status codes.
 
-### <a href="#updating-resources" id="updating-resources" class="headerlink"></a> Updating Resources
+## <a href="#updating-resources" id="updating-resources" class="headerlink"></a> Updating Resources
 
 A resource can be updated by sending a `PATCH` request to the URL that represents the resource.
 
@@ -791,7 +785,7 @@ A server **MUST** return `403 Forbidden` in responses to an unsupported request 
 
 A server **MAY** respond with other HTTP status codes.
 
-### <a href="#deleting-resources" id="deleting-resources" class="headerlink"></a> Deleting Resources
+## <a href="#deleting-resources" id="deleting-resources" class="headerlink"></a> Deleting Resources
 
 An individual resource can be deleted by making a `DELETE` request to the resource's URL:
 
