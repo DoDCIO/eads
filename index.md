@@ -14,7 +14,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 interpreted as described in
 [RFC2119](http://tools.ietf.org/html/rfc2119).
 
-### <a href="#what-is-rest" id="what-is-rest" class="headerlink"></a> What is REST?
+## <a href="#what-is-rest" id="what-is-rest" class="headerlink"></a> What is REST?
 
 [Representational State Transfer (REST)](https://en.wikipedia.org/wiki/Representational_state_transfer) is a network-based architectural style for distributed hypermedia systems.  It was introduced by [Roy Fielding](https://en.wikipedia.org/wiki/Roy_Fielding) in his 2000 PhD dissertation ["Architectural Styles and the Design of Network-based Software Architectures"](http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm).
 
