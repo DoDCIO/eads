@@ -7,16 +7,27 @@ The Enterprise APIs for Data Sharing (EADS) effort is defining a set of best pra
 
 In the spirit of transparency and collaboration, the EADS team is working with the larger DoD Technical Community (in a [public GitHub repository](https://github.com/540co/eads)) to help define a solution that best fits the DoD's needs.  Please refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) to see how you can contribute to this project.
 
-### <a href="#what-is-rest" id="what-is-rest" class="headerlink"></a> What is REST?
-
-*Coming soon...*
-
 ## <a href="#conventions" id="conventions" class="headerlink"></a> Conventions
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in
 [RFC2119](http://tools.ietf.org/html/rfc2119).
+
+### <a href="#what-is-rest" id="what-is-rest" class="headerlink"></a> What is REST?
+
+[Representational State Transfer (REST)](https://en.wikipedia.org/wiki/Representational_state_transfer) is a network-based architectural style for distributed hypermedia systems.  It was introduced by [Roy Fielding](https://en.wikipedia.org/wiki/Roy_Fielding) in his 2000 PhD dissertation ["Architectural Styles and the Design of Network-based Software Architectures"](http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm).
+
+A RESTful system is defined by six guiding constraints which restrict how a server processes and responds to client requests.  These constraints are intended to gain performance, scalability, simplicity, modifiability, visibility, portability, and reliability.  The six constraints are:
+
+* **Client-Server** - Separation of concerns (user interface vs data storage).
+* **Stateless** - Each request must contain all of the information necessary to understand and process the request.
+* **Cacheable** - Data within a response must be labeled as cacheable or non-cacheable in order to improve network efficiency.
+* **Layered System** - hierarchical layers constraining component behavior
+* **Uniform Interface** - Identification of resources; manipulation of resources through representations; self-descriptive messages; and, hypermedia as the engine of application state (HATEOS)
+* **Code on Demand** - Ability to download and execute code.
+
+REST leverages the HTTP protocol making it a desired architectural style due to simplicity and ease of implementation.
 
 ## <a href="#using-the-api" id="using-the-api" class="headerlink"></a> Using the API
 
