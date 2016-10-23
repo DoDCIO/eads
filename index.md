@@ -27,17 +27,19 @@ A RESTful system is defined by six guiding constraints which restrict how a serv
 * **Uniform Interface** - Identification of resources; manipulation of resources through representations; self-descriptive messages; and, hypermedia as the engine of application state (HATEOS)
 * **Code on Demand** - Ability to download and execute code.
 
-REST leverages the HTTP protocol making it a desired architectural style due to simplicity and ease of implementation.
+In addition to the benefits listed perviously, REST leverages the HTTP protocol making it a desired architectural style due to simplicity and ease of implementation.
+
+> **NOTE**: REST is **NOT** a standard or protocol.  It is an architectural style or pattern.
 
 ## <a href="#using-the-api" id="using-the-api" class="headerlink"></a> Using the API
 
-All API access **MUST** be over HTTPS.
+**ALL** communication between client and server **MUST** be sent using HTTPS.
 
 ### <a href="#cors" id="cors" class="headerlink"></a> Cross-Origin Resource Sharing (CORS)
 
 An important concept in web application security is the [same-origin policy](https://en.wikipedia.org/wiki/Same-origin_policy).  This policy allows scripts in one web page to access data in another web page only if they both have the same origin.  The origin is defined as the combination of URI scheme, hostname, and port number.
 
-With the increasing popularity of JavaScript frameworks and heavier reliance on client-side (browser) applications, it becomes necessary to allow these apps to access resources from different origins... CORS to the rescue.
+With the increasing popularity of JavaScript frameworks and heavier reliance on client-side (browser) applications, it becomes necessary to allow these apps to access resources from different origins... **CORS** to the rescue.
 
 [Cross-origin resource sharing (CORS)](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) allows restricted resources to be requested from a domain other than the domain from which the resource originated.
 
@@ -106,7 +108,7 @@ Servers **MUST** version their APIs.  Version names **MUST** be whole number int
 Clients **MUST** specify the desired version of the API as part of the request path: `https://[BASE_URL]/[VERSION]/[RESOURCE]`
 
 ```
-https://api.example.com/v1/books
+https://api.example.com/v1/songs
 ```
 
 Servers **MUST** respond with a `406 Not Acceptable` status code if a request specifies an unsupported version.
@@ -181,21 +183,24 @@ In addition, a meta object **MAY** contain any of these top-level members:
 When retrieving a list of [resource objects], the response will include a *subset* of the attributes for that resource.  This is the "summary" representation of the resource.  To obtain all attributes for a resource, retrieve the "detailed" representation.
 
 ```http
-GET /books HTTP/1.1
+GET /albums HTTP/1.1
 Accept: application/json
 
 {
-  "meta": {},
+  "meta": {
+    "resourceType": "Album",
+    "responseTime": 39
+  },
   "data": [
     {
       "id": "1",
-      "href": "/books/1",
-      "title": "The Greatest Book in the World"
+      "href": "/albums/1",
+      "title": "For Those About to Rock We Salute You"
     },
     {
       "id": "2",
-      "href": "/books/2",
-      "title": "The Worst Book in the World"
+      "href": "/albums/2",
+      "title": "Green River"
     }
   ]
 }
@@ -206,29 +211,28 @@ Accept: application/json
 When retrieving an individual resource, the response will typically include *all* attributes for that resource.  This is the "detailed" representation of the resource.
 
 ```http
-GET /books/1 HTTP/1.1
+GET /albums/1 HTTP/1.1
 Accept: application/json
 
 {
-  "meta": {},
+  "meta": {
+    "resourceType": "Album",
+    "responseTime": 22
+  },
   "data": {
     "id": "1",
-    "href": "/books/1",
-    "title": "The Greatest Book in the World",
-    "author": {
+    "href": "/albums/1",
+    "title": "For Those About to Rock We Salute You",
+    "coverArt": "https://ia800500.us.archive.org/2/items/mbid-6282e607-18b3-39c2-822b-b8d7bc00c343/mbid-6282e607-18b3-39c2-822b-b8d7bc00c343-1132379641_thumb500.jpg",
+    "releasedAt": "1981-11-23",
+    "artist": {
       "id": "247",
-      "href": "/authors/247",
-      "name": "John Smith"
+      "href": "/artists/247",
+      "name": "AC/DC"
     },
-    "publisher": {
-      "id": "38",
-      "href": "/publishers/38",
-      "name": "Only the Greatest, Inc."
-    },
-    "yearPublished": "2016",
-    "reviews": {
-      "href": "/books/1/reviews",
-      "totalCount": 382
+    "songs": {
+      "href": "/albums/1/songs",
+      "totalCount": 10
     }
   }
 }
@@ -243,21 +247,25 @@ To-Many relationships, when included in a detailed representation, **MUST** be a
 * `href`: The url for the nested collection [string].
 * `totalCount`: The total number of items in the collection [integer].
 
-For example, when including reviews for a book, the reviews relationship would be included as follows:
+For example, when including songs for an album, the songs relationship would be included as follows:
 
 ```http
-GET /books/1 HTTP/1.1
+GET /albums/1 HTTP/1.1
 Accept: application/json
 
 {
-  "meta": {},
+  "meta": {
+    "resourceType": "Album",
+    "responseTime": 22
+  },
   "data": {
     "id": "1",
-    "href": "/books/1",
-    "title": "The Greatest Book in the World",
-    "reviews": {
-      "href": "/books/1/reviews",
-      "totalCount": 382
+    "href": "/albums/1",
+    "title": "For Those About to Rock We Salute You",
+    ...
+    "songs": {
+      "href": "/albums/1/songs",
+      "totalCount": 10
     }
   }
 }
@@ -276,17 +284,17 @@ There are 2 ways to retrieve resources:
 * Retrieve a collection of resources
 * Retrieve a single resource
 
-The following request retrieves a collection of books:
+The following request retrieves a collection of albums:
 
 ```http
-GET /books HTTP/1.1
+GET /albums HTTP/1.1
 Accept: application/json
 ```
 
-The following request retrieves a single book:
+The following request retrieves a single album:
 
 ```http
-GET /books/1 HTTP/1.1
+GET /albums/1 HTTP/1.1
 Accept: application/json
 ```
 
@@ -298,7 +306,7 @@ A server **MUST** respond to a successful request to retrieve an individual reso
 
 A server **MUST** respond to a successful request to retrieve a resource collection with an array of [resource objects] or an empty array (`[]`).
 
-A `GET` request to a collection of books could return:
+A `GET` request to a collection of albums could return:
 
 ```http
 HTTP/1.1 200 OK
@@ -306,19 +314,19 @@ Content-Type: application/json
 
 {
   "meta": {
-    "resourceType": "Book",
-    "responseTime": 73
+    "resourceType": "Album",
+    "responseTime": 39
   },
   "data": [
     {
       "id": "1",
-      "href": "/books/1",
-      "title": "The Greatest Book in the World"
+      "href": "/albums/1",
+      "title": "For Those About to Rock We Salute You"
     },
     {
       "id": "2",
-      "href": "/books/2",
-      "title": "The Worst Book in the World"
+      "href": "/albums/2",
+      "title": "Green River"
     }
   ]
 }
@@ -332,14 +340,14 @@ Content-Type: application/json
 
 {
   "meta": {
-    "resourceType": "Book",
-    "responseTime": 26
+    "resourceType": "Album",
+    "responseTime": 19
   },
   "data": []
 }
 ```
 
-A `GET` request to an individual book could return:
+A `GET` request to an individual album could return:
 
 ```http
 HTTP/1.1 200 OK
@@ -347,27 +355,23 @@ Content-Type: application/json
 
 {
   "meta": {
-    "resourceType": "Book",
-    "responseTime": 49
+    "resourceType": "Album",
+    "responseTime": 22
   },
   "data": {
     "id": "1",
-    "href": "/books/1",
-    "title": "The Greatest Book in the World",
-    "author": {
+    "href": "/albums/1",
+    "title": "For Those About to Rock We Salute You",
+    "coverArt": "https://ia800500.us.archive.org/2/items/mbid-6282e607-18b3-39c2-822b-b8d7bc00c343/mbid-6282e607-18b3-39c2-822b-b8d7bc00c343-1132379641_thumb500.jpg",
+    "releasedAt": "1981-11-23",
+    "artist": {
       "id": "247",
-      "href": "/authors/247",
-      "name": "John Smith"
+      "href": "/artists/247",
+      "name": "AC/DC"
     },
-    "publisher": {
-      "id": "38",
-      "href": "/publishers/38",
-      "name": "Only the Greatest, Inc."
-    },
-    "yearPublished": "2016",
-    "reviews": {
-      "href": "/books/1/reviews",
-      "totalCount": 382
+    "songs": {
+      "href": "/albums/1/songs",
+      "totalCount": 10
     }
   }
 }
@@ -389,7 +393,7 @@ A client **MAY** request that an endpoint return only specific fields in the res
 
 The value of the `fields` parameter **MUST** be a comma-separated list that refers to the name(s) of the fields to be returned.
 
-To return a subset of fields for nested resources, use dot notation for the field names.  For example, to return only the name of an author, specify the field name as `author.name`.
+To return a subset of fields for nested resources, use dot notation for the field names.  For example, to return only the name of an artist, specify the field name as `artist.name`.
 
 If a client requests a specific set of fields using the `fields` query parameter, an endpoint **MUST** include only the mandatory and specified fields.  Additional fields **MUST NOT** be included in the response.
 
@@ -398,7 +402,7 @@ A client **MUST** only specify fields available in the detailed representation f
 A server **MUST** respond with `400 Bad Request` when provided invalid or unavailable field names.
 
 ```http
-GET /books?fields=name,yearPublished HTTP/1.1
+GET /albums?fields=title,coverArt HTTP/1.1
 Accept: application/json
 ```
 
@@ -409,25 +413,25 @@ A server **MAY** choose to support requests to sort resource collections based o
 An endpoint **MAY** support requests to sort the resources with a `sort` query parameter. The value for `sort` **MUST** represent sort fields.
 
 ```http
-GET /books?sort=name HTTP/1.1
+GET /albums?sort=title HTTP/1.1
 Accept: application/json
 ```
 
 An endpoint **MAY** support multiple sort fields by allowing comma-separated sort fields.  Sort fields **SHOULD** be applied in the order specified.
 
 ```http
-GET /books?sort=name,yearPublished HTTP/1.1
+GET /albums?sort=title,coverArt HTTP/1.1
 Accept: application/json
 ```
 
 The sort order for each sort field **MUST** be ascending unless it is prefixed with a minus, in which case it **MUST** be descending.
 
 ```http
-GET /books?sort=name,-yearPublished HTTP/1.1
+GET /albums?sort=title,-coverArt HTTP/1.1
 Accept: application/json
 ```
 
-To specify fields for nested resources, use dot notation for the field names.  For example, to sort by the name of an author, specify the sort field name as `author.name`.
+To specify fields for nested resources, use dot notation for the field names.  For example, to sort by the name of an artist, specify the sort field name as `artist.name`.
 
 A client **MUST** only specify sort fields available in the detailed representation for a resource.
 
@@ -465,7 +469,7 @@ The `limit` and `offset` query parameters are reserved for pagination and **SHOU
 An example client request using `limit` and `offset`
 
 ```http
-GET /books?limit=20&offset=40 HTTP/1.1
+GET /albums?limit=20&offset=40 HTTP/1.1
 Accept: application/json
 ```
 
@@ -502,7 +506,7 @@ Multiple conditions will be accommodated by separating single conditions with a 
 [RESOURCE_URL]?filters=attribute%3D%3Dvalue,attribute2%3E%3CminValue;maxValue
 ```
 
-To specify fields for nested resources, use dot notation for the field names.  For example, to filter using the name of an author, specify the filter field name as `author.name`.
+To specify fields for nested resources, use dot notation for the field names.  For example, to filter using the name of an artist, specify the filter field name as `artist.name`.
 
 A client **MUST** only specify filter fields available in the detailed representation for a resource.
 
@@ -524,23 +528,21 @@ backslash | \ | \\\
 
 A resource can be created by sending a `POST` request to the collections endpoint for that resource type.  The request **MUST** include a single [resource object][resource objects].
 
-A new book might be created with the following request:
+A new album might be created with the following request:
 
 ```http
-POST /books HTTP/1.1
+POST /albums HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 
 {
   "data": {
-    "title": "The 2nd Greatest Book in the World",
-    "author": {
+    "title": "Journeyman",
+    "coverArt": "https://ia902304.us.archive.org/2/items/mbid-55767db4-d426-3988-bf4c-5121964cac1d/mbid-55767db4-d426-3988-bf4c-5121964cac1d-8414673474_thumb500.jpg",
+    "releasedAt": "1989-11-07",
+    "artist": {
       "id": "175"
-    },
-    "publisher": {
-      "id": "19"
-    },
-    "yearPublished": "2016"
+    }
   }
 }
 ```
@@ -557,31 +559,27 @@ The response **MUST** also include a document that contains the newly created re
 
 ```http
 HTTP/1.1 201 CREATED
-Location: https://api.example.com/v1/books/3
+Location: https://api.example.com/v1/albums/3
 Content-Type: application/json
 
 {
   "meta": {
-    "resourceType": "Book",
-    "responseTime": 63
+    "resourceType": "Album",
+    "responseTime": 46
   },
   "data": {
     "id": "3",
-    "href": "/books/3",
-    "title": "The 2nd Greatest Book in the World",
-    "author": {
+    "href": "/albums/3",
+    "title": "Journeyman",
+    "coverArt": "https://ia902304.us.archive.org/2/items/mbid-55767db4-d426-3988-bf4c-5121964cac1d/mbid-55767db4-d426-3988-bf4c-5121964cac1d-8414673474_thumb500.jpg",
+    "releasedAt": "1989-11-07",
+    "artist": {
       "id": "175",
       "href": "/authors/175",
-      "name": "Jane Smith"
+      "name": "Eric Clapton"
     },
-    "publisher": {
-      "id": "19",
-      "href": "/publishers/19",
-      "name": "We Settle for Less, Inc."
-    },
-    "yearPublished": "2016",
-    "reviews": {
-      "href": "/books/3/reviews",
+    "songs": {
+      "href": "/albums/3/songs",
       "totalCount": 0
     }
   }
@@ -607,13 +605,13 @@ A resource can be updated by sending a `PATCH` request to the URL that represent
 The `PATCH` request **MUST** include a single [resource object][resource objects].
 
 ```http
-PATCH /books/1 HTTP/1.1
+PATCH /albums/1 HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 
 {
   "data": {
-    "title": "The Best Book in the World"
+    "title": "My Updated Title"
   }
 }
 ```
@@ -671,10 +669,10 @@ The `PATCH` request **MUST** include a top-level member named `data` containing 
 * a resource identifier object corresponding to the new related resource.
 * `null`, to remove the relationship.
 
-A request to update the author of a book:
+A request to update the artist of an album:
 
 ```http
-PATCH /books/1/author HTTP/1.1
+PATCH /albums/1/artist HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 
@@ -685,10 +683,10 @@ Accept: application/json
 }
 ```
 
-A request to clear the author of a book:
+A request to clear the artist of an album:
 
 ```http
-PATCH /books/1/author HTTP/1.1
+PATCH /albums/1/artist HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 
@@ -709,10 +707,10 @@ For all request types, the body **MUST** contain a `data` member whose value is 
 
 If a client makes a `PATCH` request, the server **MUST** either completely replace every member of the relationship, return an appropriate error response if some resources can not be found or accessed, or return a `403 Forbidden` response if complete replacement is not allowed by the server.
 
-The following request replaces every tag for a book:
+The following request replaces every song for an album:
 
 ```http
-PATCH /books/1/tags HTTP/1.1
+PATCH /albums/1/songs HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 
@@ -724,10 +722,10 @@ Accept: application/json
 }
 ```
 
-The following request clears every tag for a book:
+The following request clears every song for an album:
 
 ```http
-PATCH /books/1/tags HTTP/1.1
+PATCH /albums/1/songs HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 
@@ -740,10 +738,10 @@ If a client makes a `POST` request, the server **MUST** add the specified member
 
 If all of the specified resources can be added to, or are already present in, the relationship then the server **MUST** return a successful response.
 
-The following request adds the tag with ID `345` to the list of tags for the book with ID `1`:
+The following request adds the song with ID `345` to the list of songs for the album with ID `1`:
 
 ```http
-POST /books/1/tags HTTP/1.1
+POST /albums/1/songs HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 
@@ -756,10 +754,10 @@ Accept: application/json
 
 If the client makes a `DELETE` request, the server **MUST** delete the specified members from the relationship or return a `403 Forbidden` response.  If all of the specified members resources are able to be removed from, or are already missing from, the relationship then the server **MUST** return a successful response.
 
-The following request removes tags with IDs `17` and `29` from the book with ID `1`:
+The following request removes songs with IDs `17` and `29` from the album with ID `1`:
 
 ```http
-DELETE /books/1/tags HTTP/1.1
+DELETE /albums/1/songs HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 
@@ -790,7 +788,7 @@ A server **MAY** respond with other HTTP status codes.
 An individual resource can be deleted by making a `DELETE` request to the resource's URL:
 
 ```http
-DELETE /books/1 HTTP/1.1
+DELETE /albums/1 HTTP/1.1
 Accept: application/json
 ```
 
