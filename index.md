@@ -33,7 +33,7 @@ A RESTful system is defined by six guiding constraints which restrict how a serv
 
 In addition to the benefits listed perviously, REST leverages the HTTP protocol making it a desired architectural style due to simplicity and ease of implementation.
 
-> **NOTE**: REST is **NOT** a standard or protocol.  It is an architectural style or pattern.
+> **NOTE**: REST is **NOT** a standard or protocol.  It is an architectural style/pattern.
 
 <hr/>
 
