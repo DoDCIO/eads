@@ -7,12 +7,16 @@ The Enterprise APIs for Data Sharing (EADS) effort is defining a set of best pra
 
 In the spirit of transparency and collaboration, the EADS team is working with the larger DoD Technical Community (in a [public GitHub repository](https://github.com/540co/eads)) to help define a solution that best fits the DoD's needs.  Please refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) to see how you can contribute to this project.
 
+<hr/>
+
 ## <a href="#conventions" id="conventions" class="headerlink"></a> Conventions
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in
 [RFC2119](http://tools.ietf.org/html/rfc2119).
+
+<hr/>
 
 ## <a href="#what-is-rest" id="what-is-rest" class="headerlink"></a> What is REST?
 
@@ -30,6 +34,8 @@ A RESTful system is defined by six guiding constraints which restrict how a serv
 In addition to the benefits listed perviously, REST leverages the HTTP protocol making it a desired architectural style due to simplicity and ease of implementation.
 
 > **NOTE**: REST is **NOT** a standard or protocol.  It is an architectural style or pattern.
+
+<hr/>
 
 ## <a href="#using-the-api" id="using-the-api" class="headerlink"></a> Using the API
 
@@ -124,6 +130,8 @@ Servers **SHOULD** use OAuth 2.0 [RFC 6749](https://tools.ietf.org/html/rfc6749)
 Servers **SHOULD** use the [OpenAPI Specification (fka The Swagger Specification)](https://github.com/OAI/OpenAPI-Specification) to document the API.
 
 Servers **SHOULD** place this documentation at the root path of the API.  For example, documentation for version 1 of an API should be located at: `https://[BASE_URL]/v1`
+
+<hr/>
 
 ## <a href="#schema" id="schema" class="headerlink"></a> Schema
 
@@ -270,6 +278,8 @@ Accept: application/json
   }
 }
 ```
+
+<hr/>
 
 ## <a href="#retrieving-data" id="retrieving-data" class="headerlink"></a> Retrieving Data
 
@@ -524,6 +534,8 @@ backslash | \ | \\\
 [RESOURCE_URL]?filters=fullName%3D%3DMontoya\,Inigo
 ```
 
+<hr/>
+
 ## <a href="#creating-resources" id="creating-resources" class="headerlink"></a> Creating Resources
 
 A resource can be created by sending a `POST` request to the collections endpoint for that resource type.  The request **MUST** include a single [resource object][resource objects].
@@ -597,6 +609,8 @@ A server **MAY** return `403 Forbidden` in response to an unsupported request to
 ##### Other Responses
 
 A server **MAY** respond with other HTTP status codes.
+
+<hr/>
 
 ## <a href="#updating-resources" id="updating-resources" class="headerlink"></a> Updating Resources
 
@@ -783,6 +797,8 @@ A server **MUST** return `403 Forbidden` in responses to an unsupported request 
 
 A server **MAY** respond with other HTTP status codes.
 
+<hr/>
+
 ## <a href="#deleting-resources" id="deleting-resources" class="headerlink"></a> Deleting Resources
 
 An individual resource can be deleted by making a `DELETE` request to the resource's URL:
@@ -802,9 +818,13 @@ A server **MUST** return a `204 No Content` status code if a deletion request is
 
 A server **MAY** respond with other HTTP status codes.
 
+<hr/>
+
 ## <a href="#query-parameters" id="query-parameters" class="headerlink"></a> Query Parameters
 
 If a server encounters a query parameter that it does not know how to process, it **MUST** return `400 Bad Request`
+
+<hr/>
 
 ## <a href="#errors" id="errors" class="headerlink"></a> Errors
 
