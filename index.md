@@ -3,9 +3,15 @@ layout: default
 ---
 
 ## <a href="#introduction" id="introduction" class="headerlink"></a> Introduction
-The Enterprise APIs for Data Sharing (EADS) effort is defining a set of best practices and lessons learned for implementing web-based APIs (RESTful APIs) from existing DoD systems. This EADS Handbook contains recommended tactics, techniques, and procedures (TTPs) when making this digital transformation.
+The Enterprise APIs for Data Sharing (EADS) effort is defining a set of guidelines for Department of Defense (DoD) APIs, encouraging consistency, maintainability, and best practices across applications. This EADS Handbook contains recommended tactics, techniques, and procedures (TTPs) to help balance RESTful API interfaces with a positive developer experience (DX).
 
-In the spirit of transparency and collaboration, the EADS team is working with the larger DoD Technical Community (in a [public GitHub repository](https://github.com/540co/eads)) to help define a solution that best fits the DoD's needs.  Please refer to the [CONTRIBUTING.md](./CONTRIBUTING.md) to see how you can contribute to this project.
+This document borrows heavily from:
+
+* [White House Web API Standards](https://github.com/whitehouse/api-standards)
+* [18F API Standards](https://github.com/18F/api-standards)
+* [Roy Fielding's Dissertation on REST](http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
+
+In the spirit of transparency and collaboration, the EADS team is working with the larger DoD Technical Community (in a [public GitHub repository](https://github.com/540co/eads)) to help define a solution that best fits the DoD's needs.  Please refer to the [CONTRIBUTING.md](https://github.com/540co/eads/CONTRIBUTING.md) to see how you can contribute to this project.
 
 <hr/>
 
@@ -37,111 +43,151 @@ In addition to the benefits listed perviously, REST leverages the HTTP protocol 
 
 <hr/>
 
-## <a href="#using-the-api" id="using-the-api" class="headerlink"></a> Using the API
+## <a href="#restful-api-guidelines" id="restful-api-guidelines" class="headerlink"></a> RESTful API Guidelines
 
-**ALL** communication between client and server **MUST** be sent using HTTPS.
+This section describes general guidelines for RESTful APIs.
+
+<hr/>
+
+### <a href="#https" id="https" class="headerlink"></a> Always use HTTPS
+
+**ALL** APIs **MUST** use and require HTTPS (using TLS/SSL). HTTPS provides:
+
+* **Security**. The contents of the request are encrypted across the Internet.
+* **Authenticity**. A stronger guarantee that a client is communicating with the real API.
+* **Privacy**. Enhanced privacy for apps and users using the API. HTTP headers and query string parameters (among other things) will be encrypted.
+* **Compatibility**. Broader client-side compatibility. For CORS requests to the API to work on HTTPS websites -- to not be blocked as mixed content -- those requests must be over HTTPS.
+
+HTTPS **SHOULD** be configured using guides provided by [DISA](http://iase.disa.mil/pki-pke/Pages/admin.aspx).
+
+<hr/>
+
+### <a href="#content-negotiation" id="content-negotiation" class="headerlink"></a> Content Negotiation
+
+#### <a href="#json" id="json" class="headerlink"></a> Use JSON
+
+[JSON](https://en.wikipedia.org/wiki/JSON) is an excellent, widely supported transport format, suitable for many web APIs.
+
+Supporting JSON and only JSON is a practical default for APIs, and generally reduces complexity for both the API provider and consumer.
+
+General JSON guidelines:
+
+* Responses **MUST** be a **JSON object** (not an array). Using an array to return results limits the ability to include metadata about results, and limits the API's ability to add additional top-level keys in the future.
+* **Don't use unpredictable keys**. Parsing a JSON response where keys are unpredictable (e.g. derived from data) is difficult, and adds friction for clients.
+* **Use consistent case for keys**. Whether you use snake_case or camelCase for your API keys, make sure you are consistent.
+
+> Alternative formats, such as PDF and CSV **MAY** be allowed.  XML **MUST NOT** be used.
+
+#### <a href="#utf8" id="utf8" class="headerlink"></a> Use UTF-8
+
+Just [use UTF-8](http://utf8everywhere.org/).
+
+Expect accented characters or "smart quotes" in API output, even if they're not expected.
+
+An API **SHOULD** tell clients to expect UTF-8 by including a charset notation in the Content-Type header for responses.
+
+#### <a href="#content-negotiation-headers" id="content-negotiation-headers" class="headerlink"></a> Content Negotiation Headers
+
+* The `Content-Type` header **SHOULD** be specified in ALL requests/responses:
+
+  ```http
+  Content-Type: application/json; charset=utf-8
+  ```
+
+* The API **MUST** respond with a `415 Unsupported Media Type` status code if a client specifies a `Content-Type` other than `application/json`.
+
+* Clients **SHOULD** specify a response media type of JSON with the header:
+
+  ```http
+  Accept: application/json
+  ```
+
+  > If the `Accept` header is not sent, JSON will be sent back by default.
+
+* The API **MUST** respond with a `406 Not Acceptable` status code if a client requests an unsupported response format.
+
+<hr/>
+
+### <a href="#versioning" id="versioning" class="headerlink"></a> Versioning
+
+* Never release an API without a version number.
+* Version names **MUST** be integers, not decimal numbers, preceded by the letter `v`: `v1`, `v2`, `v3`...
+* Include the version number as part of the request path: `https://[BASE_URL]/[VERSION]/[RESOURCE]`
+* The API **SHOULD** respond with a `406 Not Acceptable` status code if a request specifies an unsupported version.
+* Increment the version number any time breaking changes are introduced.
+* Maintain APIs at least one version back.
+
+<hr/>
+
+### <a href="#url-naming" id="url-naming" class="headerlink"></a> URL Naming
+
+* A URL identifies a resource.
+* URLs should include nouns, not verbs.
+* Use plural nouns only (no singular nouns).
+* Use HTTP verbs (GET, POST, PATCH, DELETE) to operate on the collections and elements.
+* You **SHOULD NOT** need to go deeper than resource/identifier/resource.
+
+Examples:
+
+```
+https://example.com/api/v1/albums
+https://example.com/api/v1/albums/294
+https://example.com/api/v1/albums/294/songs
+```
+
+<hr/>
 
 ### <a href="#cors" id="cors" class="headerlink"></a> Cross-Origin Resource Sharing (CORS)
 
-An important concept in web application security is the [same-origin policy](https://en.wikipedia.org/wiki/Same-origin_policy).  This policy allows scripts in one web page to access data in another web page only if they both have the same origin.  The origin is defined as the combination of URI scheme, hostname, and port number.
+For clients to be able to use an API from inside web browsers, the API must [enable CORS](http://enable-cors.org/).
 
-With the increasing popularity of JavaScript frameworks and heavier reliance on client-side (browser) applications, it becomes necessary to allow these apps to access resources from different origins... **CORS** to the rescue.
-
-[Cross-origin resource sharing (CORS)](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing) allows restricted resources to be requested from a domain other than the domain from which the resource originated.
-
-Servers **SHOULD** respond with the `Access-Control-Allow-Origin` header indicating which origins are allowed.
-
-```http
-Access-Control-Allow-Origin: http://www.example.com
-```
-
-A wildcard may be specified to indicate all origins are allowed:
+For the simplest and most common use case, where the entire API should be accessible from inside the browser, enabling CORS is as simple as including this HTTP header in all responses:
 
 ```http
 Access-Control-Allow-Origin: *
 ```
 
-In addition to specifying the allowed origins, servers **SHOULD** specify allowed HTTP methods and HTTP headers as follows:
-
-To allow `GET` `POST` `PUT` and `DELETE` methods, the following header would be specified:
-
-```http
-Access-Control-Allow-Methods: GET, POST, PUT, DELETE
-```
-
-To allow `Content-Type`, `Accept`, and `Authorization` headers, the following header would be specified:
-
-```http
-Access-Control-Allow-Headers: Content-Type, Accept, Authorization
-```
-
-A wildcard may be specified to allow all headers:
-
-```http
-Access-Control-Allow-Headers: *
-```
-
-A server **MAY** specify additional CORS headers.
-
-### <a href="#content-negotiation" id="content-negotiation" class="headerlink"></a> Content Negotiation
-
-Clients **MUST** send data as JSON.  XML **MUST NOT** be used.
-
-Servers **SHOULD** return data using JSON.  Alternative formats, such as PDF and CSV **MAY** be allowed.  XML **MUST NOT** be used.
-
-Clients and Servers **MUST** send all data in request/response documents with the header:
-
-```http
-Content-Type: application/json
-```
-
-Servers **MUST** respond with a `415 Unsupported Media Type` status code if a client specifies a `Content-Type` other than `application/json`.
-
-Clients **SHOULD** specify a response media type of JSON with the header:
-
-```http
-Accept: application/json
-```
-
-> If the `Accept` header is not sent, JSON will be sent back by default.
-
-Servers **MUST** respond with a `406 Not Acceptable` status code if a client requests an unsupported response format.
-
-### <a href="#versioning" id="versioning" class="headerlink"></a> Versioning
-
-Servers **MUST** version their APIs.  Version names **MUST** be whole number integers preceded by the letter v: `v1`, `v2`, `v3`...
-
-Clients **MUST** specify the desired version of the API as part of the request path: `https://[BASE_URL]/[VERSION]/[RESOURCE]`
-
-```
-https://api.example.com/v1/songs
-```
-
-Servers **MUST** respond with a `406 Not Acceptable` status code if a request specifies an unsupported version.
-
-Servers **MUST** increment the version number any time breaking changes are introduced.
-
-### <a href="#authentication" id="authentication" class="headerlink"></a> Authentication
-
-Servers **SHOULD** use OAuth 2.0 [RFC 6749](https://tools.ietf.org/html/rfc6749) for API authentication.
-
-### <a href="#documentation" id="documentation" class="headerlink"></a> Documentation
-
-Servers **SHOULD** use the [OpenAPI Specification (fka The Swagger Specification)](https://github.com/OAI/OpenAPI-Specification) to document the API.
-
-Servers **SHOULD** place this documentation at the root path of the API.  For example, documentation for version 1 of an API should be located at: `https://[BASE_URL]/v1`
+For more advanced configuration, see the [W3C spec](http://www.w3.org/TR/cors/) or [Mozilla's guide](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS).
 
 <hr/>
 
-## <a href="#schema" id="schema" class="headerlink"></a> Schema
+### <a href="#authentication" id="authentication" class="headerlink"></a> Authentication
+
+The API **SHOULD** use OAuth 2.0 [RFC 6749](https://tools.ietf.org/html/rfc6749) for authenticating clients.
+
+<hr/>
+
+### <a href="#documentation" id="documentation" class="headerlink"></a> Documentation
+
+The API **SHOULD** be documented using the [OpenAPI Specification (fka The Swagger Specification)](https://github.com/OAI/OpenAPI-Specification).
+
+The API **SHOULD** place this documentation at the root path for each version.  For example, documentation for version 1 of an API should be located at: `https://[BASE_URL]/v1`
+
+<hr/>
+
+## <a href="#schema-guidelines" id="schema-guidelines" class="headerlink"></a> Schema Guidelines
 
 This section describes the structure of request/response documents.  These documents are defined in [JavaScript Object Notation (JSON)](https://tools.ietf.org/html/rfc7159).
 
-All timestamps are returned in ISO 8601 format:
+### <a href="#date-format" id="date-format" class="headerlink"></a> Use a consistent date format
+
+* The ISO 8601 date/time format **MUST** be used `YYYY-MM-DDTHH:MM:SSZ`.
+* Maintain all times in UTC.
+* This date format is used all over the web, and puts each field in consistent order -- from least granular to most granular.
+
+Example date:
 
 ```
-YYYY-MM-DDTHH:MM:SSZ
+2013-02-27
 ```
+
+Example date with time:
+
+```
+2013-02-27T10:00:00Z
+```
+
+<hr/>
 
 ### <a href="#top-level" id="top-level" class="headerlink"></a> Top Level
 
@@ -160,6 +206,8 @@ The `data` member **MUST** contain either:
 * a single [resource object][resource objects] for requests targeting single resources
 * an array of [resource objects] or an empty array for requests targeting resource collections
 
+<hr/>
+
 ### <a href="#resource-objects" id="resource-objects" class="headerlink"></a> Resource Objects
 
 A resource object **MUST** contain at least the following top-level members:
@@ -171,6 +219,8 @@ In addition, a resource object **MAY** contain any of these top-level members:
 
 * `createdAt`: The timestamp the resource was created [string (ISO 8601)].
 * `updatedAt`: The timestamp the resource was last updated [string (ISO 8601)].
+
+<hr/>
 
 ### <a href="#meta-objects" id="meta-objects" class="headerlink"></a> Meta Objects
 
@@ -185,6 +235,8 @@ In addition, a meta object **MAY** contain any of these top-level members:
 
 * `user`: The user ID of the user making the request [string].
 * `date`: The date/time the request was received [ISO 8601 Datetime w/ Timezone].
+
+<hr/>
 
 ### <a href="#summary-representations" id="summary-representations" class="headerlink"></a> Summary Representations
 
@@ -213,6 +265,8 @@ Accept: application/json
   ]
 }
 ```
+
+<hr/>
 
 ### <a href="#detailed-representations" id="detailed-representations" class="headerlink"></a> Detailed Representations
 
@@ -247,6 +301,8 @@ Accept: application/json
 ```
 
 Sub-resources included in a detailed representation **MUST** use the summary representation
+
+<hr/>
 
 ### <a href="#nested-representations" id="nested-representations" class="headerlink"></a> Nested Collection Representations
 
@@ -286,6 +342,8 @@ Accept: application/json
 Data can be retrieved by sending a `GET` request to an endpoint.
 
 Responses can be further refined with the optional features described below.
+
+<hr/>
 
 ### <a href="#retrieving-resources" id="retrieving-resources" class="headerlink"></a> Retrieving Resources
 
@@ -397,6 +455,8 @@ A server **MAY** respond with other HTTP status codes.
 
 A server **MAY** include error details with error responses.
 
+<hr/>
+
 ### <a href="#partial-resources" id="partial-resources" class="headerlink"></a> Partial Resources
 
 A client **MAY** request that an endpoint return only specific fields in the response by including a `fields` query parameter.
@@ -415,6 +475,8 @@ A server **MUST** respond with `400 Bad Request` when provided invalid or unavai
 GET /albums?fields=title,coverArt HTTP/1.1
 Accept: application/json
 ```
+
+<hr/>
 
 ### <a href="#sorting" id="sorting" class="headerlink"></a> Sorting
 
@@ -446,6 +508,8 @@ To specify fields for nested resources, use dot notation for the field names.  F
 A client **MUST** only specify sort fields available in the detailed representation for a resource.
 
 If the server does not support sorting as specified in the query parameter `sort`, it **MUST** return `400 Bad Request`.
+
+<hr/>
 
 ### <a href="#pagination" id="pagination" class="headerlink"></a> Pagination
 
@@ -486,6 +550,8 @@ Accept: application/json
 Servers **MUST** define `default` and `maximum` values for `limit`.
 
 Servers **MUST** return a `400 Bad Request` if the value specified by the `offset` query parameter exceeds the total resource count of the resource being retrieved.
+
+<hr/>
 
 ### <a href="#filtering" id="filtering" class="headerlink"></a> Filtering
 
@@ -667,6 +733,8 @@ A server **MUST** return `404 Not Found` when processing a request to modify a r
 ##### Other Responses
 
 A server **MAY** respond with other HTTP status codes.
+
+<hr/>
 
 ### <a href="#updating-relationships" id="updating-relationships" class="headerlink"></a> Updating Relationships
 
