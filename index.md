@@ -564,6 +564,15 @@ The API **MUST** define `default` and `maximum` values for `limit`.
 
 The API **MUST** return a `400 Bad Request` if the value specified by the `offset` query parameter exceeds the total resource count of the resource being retrieved.
 
+When returning a paginated response, the API **SHOULD** include a `pagination` object at the root level of the `meta` object:
+
+A pagination object **MUST** contain at least the following top-level members:
+
+* `limit`: The current limit specified by client (or default if not specified)
+* `offset`: The current offset specified by client (or default if not specified)
+* `count`: The number of results returned in the response
+* `totalCount`: The total number of results available
+
 <hr/>
 
 ### <a href="#filtering" id="filtering" class="headerlink"></a> Filtering
