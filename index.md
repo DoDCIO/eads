@@ -94,7 +94,7 @@ General JSON guidelines:
 
 * Responses **MUST** be a **JSON object** (not an array). Using an array to return results limits the ability to include metadata about results, and limits the API's ability to add additional top-level keys in the future.
 * **Don't use unpredictable keys**. Parsing a JSON response where keys are unpredictable (e.g. derived from data) is difficult, and adds friction for clients.
-* **Use consistent case for keys**. Whether you use snake_case or camelCase for your API keys, make sure you are consistent.
+* **Use consistent case for keys**. The API **SHOULD** use camelCase for API keys.
 
 > Alternative formats, such as PDF and CSV **MAY** be allowed.  XML **MUST NOT** be used.
 
