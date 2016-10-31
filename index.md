@@ -2,6 +2,8 @@
 layout: default
 ---
 
+# Enterprise APIs for Data Sharing (EADS) Handbook
+
 ## <a href="#introduction" id="introduction" class="headerlink"></a> Introduction
 The Enterprise APIs for Data Sharing (EADS) effort is defining a set of guidelines for Department of Defense (DoD) APIs, encouraging consistency, maintainability, and best practices across applications. This EADS Handbook contains recommended tactics, techniques, and procedures (TTPs) to help balance RESTful API interfaces with a positive developer experience (DX).
 
@@ -62,9 +64,7 @@ HTTPS **SHOULD** be configured using guides provided by [DISA](http://iase.disa.
 
 <hr/>
 
-### <a href="#content-negotiation" id="content-negotiation" class="headerlink"></a> Content Negotiation
-
-#### <a href="#json" id="json" class="headerlink"></a> Use JSON
+### <a href="#json" id="json" class="headerlink"></a> Use JSON
 
 [JSON](https://en.wikipedia.org/wiki/JSON) is an excellent, widely supported transport format, suitable for many web APIs.
 
@@ -78,15 +78,25 @@ General JSON guidelines:
 
 > Alternative formats, such as PDF and CSV **MAY** be allowed.  XML **MUST NOT** be used.
 
-#### <a href="#utf8" id="utf8" class="headerlink"></a> Use UTF-8
+<hr/>
+
+### <a href="#utf8" id="utf8" class="headerlink"></a> Use UTF-8
 
 Just [use UTF-8](http://utf8everywhere.org/).
 
 Expect accented characters or "smart quotes" in API output, even if they're not expected.
 
-An API **SHOULD** tell clients to expect UTF-8 by including a charset notation in the Content-Type header for responses.
+An API **SHOULD** tell clients to expect UTF-8 by including a charset notation in the `Content-Type` header for responses.
 
-#### <a href="#content-negotiation-headers" id="content-negotiation-headers" class="headerlink"></a> Content Negotiation Headers
+```http
+Content-Type: application/json; charset=utf-8
+```
+
+<hr/>
+
+### <a href="#content-negotiation" id="content-negotiation" class="headerlink"></a> Content Negotiation
+
+* ALL content negotiation **SHOULD** be handled using the `Content-Type` and `Accept` headers.
 
 * The `Content-Type` header **SHOULD** be specified in ALL requests/responses:
 
@@ -151,9 +161,11 @@ For more advanced configuration, see the [W3C spec](http://www.w3.org/TR/cors/) 
 
 <hr/>
 
-### <a href="#authentication" id="authentication" class="headerlink"></a> Authentication
+### <a href="#authentication" id="authentication" class="headerlink"></a> Authentication/Authorization
 
-The API **SHOULD** use OAuth 2.0 [RFC 6749](https://tools.ietf.org/html/rfc6749) for authenticating clients.
+The API **SHOULD** use OAuth 2.0 [RFC 6749](https://tools.ietf.org/html/rfc6749) when authenticating clients.
+
+OAuth 2.0 has 4 distinct authentication flows to handle various client types (mobile, browser, web, etc.).  OAuth 2.0 also has the ability to handle authorization based on scopes.  The API **MAY** choose to use OAuth scopes for authorization.
 
 <hr/>
 
@@ -184,7 +196,7 @@ Example date:
 Example date with time:
 
 ```
-2013-02-27T10:00:00Z
+2013-02-27-T10:00:00Z
 ```
 
 <hr/>
@@ -235,6 +247,7 @@ In addition, a meta object **MAY** contain any of these top-level members:
 
 * `user`: The user ID of the user making the request [string].
 * `date`: The date/time the request was received [ISO 8601 Datetime w/ Timezone].
+* `pagination`: Pagination information (totalCount, etc.).
 
 <hr/>
 
@@ -370,11 +383,11 @@ Accept: application/json
 
 ##### 200 OK
 
-A server **MUST** respond to a successful request to retrieve an individual resource or resource collection with a `200 OK` response.
+The API **MUST** respond to a successful request to retrieve an individual resource or resource collection with a `200 OK` response.
 
-A server **MUST** respond to a successful request to retrieve a resource collection with an array of [resource objects] or an empty array (`[]`).
+The API **MUST** respond to a successful request to retrieve a resource collection with an array of [resource objects] or an empty array (`[]`).
 
-A `GET` request to a collection of albums could return:
+A `GET` request to a collection of albums might return:
 
 ```http
 HTTP/1.1 200 OK
@@ -400,7 +413,7 @@ Content-Type: application/json
 }
 ```
 
-A similar response representing an empty collection would be:
+A similar response representing an empty collection would look like:
 
 ```http
 HTTP/1.1 200 OK
@@ -415,7 +428,7 @@ Content-Type: application/json
 }
 ```
 
-A `GET` request to an individual album could return:
+A `GET` request to an individual album might return:
 
 ```http
 HTTP/1.1 200 OK
@@ -447,13 +460,13 @@ Content-Type: application/json
 
 ##### 404 Not Found
 
-A server **MUST** respond with `404 Not Found` when processing a request to retrieve a single resource that does not exist.
+The API **MUST** respond with `404 Not Found` when processing a request to retrieve a single resource that does not exist.
 
 ##### Other Responses
 
-A server **MAY** respond with other HTTP status codes.
+The API **MAY** respond with other HTTP status codes.
 
-A server **MAY** include error details with error responses.
+The API **MAY** include error details with error responses.
 
 <hr/>
 
@@ -469,7 +482,7 @@ If a client requests a specific set of fields using the `fields` query parameter
 
 A client **MUST** only specify fields available in the detailed representation for a resource.
 
-A server **MUST** respond with `400 Bad Request` when provided invalid or unavailable field names.
+The API **MUST** respond with `400 Bad Request` when provided invalid or unavailable field names.
 
 ```http
 GET /albums?fields=title,coverArt HTTP/1.1
@@ -480,7 +493,7 @@ Accept: application/json
 
 ### <a href="#sorting" id="sorting" class="headerlink"></a> Sorting
 
-A server **MAY** choose to support requests to sort resource collections based on one or more "sort fields".
+The API **MAY** choose to support requests to sort resource collections based on one or more "sort fields".
 
 An endpoint **MAY** support requests to sort the resources with a `sort` query parameter. The value for `sort` **MUST** represent sort fields.
 
@@ -507,15 +520,15 @@ To specify fields for nested resources, use dot notation for the field names.  F
 
 A client **MUST** only specify sort fields available in the detailed representation for a resource.
 
-If the server does not support sorting as specified in the query parameter `sort`, it **MUST** return `400 Bad Request`.
+If the API does not support sorting as specified in the query parameter `sort`, it **MUST** return `400 Bad Request`.
 
 <hr/>
 
 ### <a href="#pagination" id="pagination" class="headerlink"></a> Pagination
 
-A server **MAY** choose to limit the number of resources returned in a response.
+The API **MAY** choose to limit the number of resources returned in a response.
 
-A server **MUST** provide links to traverse a paginated data set (“pagination links”).  These links **MUST** be provided using the `Link` header as defined in [RFC5988](https://tools.ietf.org/html/rfc5988).
+The API **MUST** provide links to traverse a paginated data set (“pagination links”).  These links **MUST** be provided using the `Link` header as defined in [RFC5988](https://tools.ietf.org/html/rfc5988).
 
 The following links **MUST** be used for pagination:
 
@@ -535,7 +548,7 @@ Link: <https://[BASE_URL]/v1/[RESOURCE]/?limit=20&offset=0>; rel="first",
 
 A link **MUST** be omitted if it is unavailable.
 
-The `limit` and `offset` query parameters are reserved for pagination and **SHOULD** be used by servers and clients for pagination operations.
+The `limit` and `offset` query parameters are reserved for pagination and **SHOULD** be used by the API and clients for pagination operations.
 
 * `limit`: The number of resource objects to return in the response
 * `offset`: The location in the overall resultset to begin retrieving resource objects
@@ -547,15 +560,15 @@ GET /albums?limit=20&offset=40 HTTP/1.1
 Accept: application/json
 ```
 
-Servers **MUST** define `default` and `maximum` values for `limit`.
+The API **MUST** define `default` and `maximum` values for `limit`.
 
-Servers **MUST** return a `400 Bad Request` if the value specified by the `offset` query parameter exceeds the total resource count of the resource being retrieved.
+The API **MUST** return a `400 Bad Request` if the value specified by the `offset` query parameter exceeds the total resource count of the resource being retrieved.
 
 <hr/>
 
 ### <a href="#filtering" id="filtering" class="headerlink"></a> Filtering
 
-A server **MAY** choose to support requests to filter resource collections based on one or more criterion.
+The API **MAY** choose to support requests to filter resource collections based on one or more criterion.
 
 An endpoint **MAY** support requests to filter the resources with a `filters` query parameter.
 
@@ -629,7 +642,7 @@ Accept: application/json
 
 ##### 201 Created
 
-If the requested resource has been created successfully, the server **MUST** return a `201 Created` status code.
+If the requested resource has been created successfully, the API **MUST** return a `201 Created` status code.
 
 The response **SHOULD** include a `Location` header identifying the location of the newly created resource.
 
@@ -666,15 +679,15 @@ Content-Type: application/json
 
 ##### 400 Bad Request
 
-A server **MAY** return `400 Bad Request` if unable to create the resource due to missing or invalid data.
+The API **MAY** return `400 Bad Request` if unable to create the resource due to missing or invalid data.
 
 ##### 403 Forbidden
 
-A server **MAY** return `403 Forbidden` in response to an unsupported request to create a resource.
+The API **MAY** return `403 Forbidden` in response to an unsupported request to create a resource.
 
 ##### Other Responses
 
-A server **MAY** respond with other HTTP status codes.
+The API **MAY** respond with other HTTP status codes.
 
 <hr/>
 
@@ -700,58 +713,58 @@ Accept: application/json
 
 Any or all of a resource's attributes **MAY** be included in the resource object included in a `PATCH` request.
 
-If a request does not include all of the attributes for a resource, the server **MUST** interpret the missing attributes as if they were included with their current values.  The server **MUST NOT** interpret missing attributes as `null` values.
+If a request does not include all of the attributes for a resource, the API **MUST** interpret the missing attributes as if they were included with their current values.  The API **MUST NOT** interpret missing attributes as `null` values.
 
 #### Updating a Resource's Relationships
 
 Any or all of a resource's relationships **MAY** be included in the resource object included in a `PATCH` request.
 
-If a request does not include all of the relationships for a resource, the server **MUST** interpret the missing relationships as if they were included with their current values.  The server **MUST NOT** interpret missing relationships as `null` or empty values.
+If a request does not include all of the relationships for a resource, the API **MUST** interpret the missing relationships as if they were included with their current values.  The API **MUST NOT** interpret missing relationships as `null` or empty values.
 
 If a relationship is included in the resource object included in a `PATCH` request, the relationship's value will be replaced with the value specified in the request.  A complete replacement will be performed on to-many relationships.
 
-A server **MAY** reject an attempt to do a full replacement of a to-many relationship.  If so, the server **MUST** reject the entire update, and return a `403 Forbidden` response.
+The API **MAY** reject an attempt to do a full replacement of a to-many relationship.  If so, the API **MUST** reject the entire update, and return a `403 Forbidden` response.
 
 #### Responses
 
 ##### 200 OK
 
-A server **MUST** return a `200 OK` status code if an update is successful.  The response document **MUST** include a representation of the updated resource as if a `GET` request was made.
+The API **MUST** return a `200 OK` status code if an update is successful.  The response document **MUST** include a representation of the updated resource as if a `GET` request was made.
 
 ##### 400 Bad Request
 
-A server **MAY** return `400 Bad Request` if unable to update the resource due to missing or invalid data.
+The API **MAY** return `400 Bad Request` if unable to update the resource due to missing or invalid data.
 
 ##### 403 Forbidden
 
-A server **MAY** return `403 Forbidden` in response to an unsupported request to update a resource.
+The API **MAY** return `403 Forbidden` in response to an unsupported request to update a resource.
 
 ##### 404 Not Found
 
-A server **MUST** return `404 Not Found` when processing a request to modify a resource (or related resource) that does not exist.
+The API **MUST** return `404 Not Found` when processing a request to modify a resource (or related resource) that does not exist.
 
 ##### Other Responses
 
-A server **MAY** respond with other HTTP status codes.
+The API **MAY** respond with other HTTP status codes.
 
 <hr/>
 
 ### <a href="#updating-relationships" id="updating-relationships" class="headerlink"></a> Updating Relationships
 
-Although relationships can be modified along with resources, the server **MAY** provide links to modify them independently.
+Although relationships can be modified along with resources, the API **MAY** provide links to modify them independently.
 
 #### Updating To-One Relationships
 
-If the server allows independent modification of relationships...
+If the API allows independent modification of relationships...
 
-A server **MUST** respond to `PATCH` requests for the to-one relationship URL.
+The API **MUST** respond to `PATCH` requests for the to-one relationship URL.
 
 The `PATCH` request **MUST** include a top-level member named `data` containing one of the following:
 
 * a resource identifier object corresponding to the new related resource.
 * `null`, to remove the relationship.
 
-A request to update the artist of an album:
+A request to update the artist of an album with `id` of `1`:
 
 ```http
 PATCH /albums/1/artist HTTP/1.1
@@ -765,7 +778,7 @@ Accept: application/json
 }
 ```
 
-A request to clear the artist of an album:
+A request to clear the artist of an album with `id` of `1`:
 
 ```http
 PATCH /albums/1/artist HTTP/1.1
@@ -777,19 +790,19 @@ Accept: application/json
 }
 ```
 
-If the relationship is updated successfully then the server **MUST** return a successful response.
+If the relationship is updated successfully then the API **MUST** return a successful response.
 
 #### Updating To-Many Relationships
 
-If the server allows independent modifications of relationships...
+If the API allows independent modifications of relationships...
 
-A server **MUST** respond to `PATCH`, `POST`, and `DELETE` requests for the to-many relationship URL.
+The API **MUST** respond to `PATCH`, `POST`, and `DELETE` requests for the to-many relationship URL.
 
 For all request types, the body **MUST** contain a `data` member whose value is an empty array or an array of resource identifier objects.
 
-If a client makes a `PATCH` request, the server **MUST** either completely replace every member of the relationship, return an appropriate error response if some resources can not be found or accessed, or return a `403 Forbidden` response if complete replacement is not allowed by the server.
+If a client makes a `PATCH` request, the API **MUST** either completely replace every member of the relationship, return an appropriate error response if some resources can not be found or accessed, or return a `403 Forbidden` response if complete replacement is not allowed by the API.
 
-The following request replaces every song for an album:
+The following request replaces every song for an album with `id` of `1`:
 
 ```http
 PATCH /albums/1/songs HTTP/1.1
@@ -804,7 +817,7 @@ Accept: application/json
 }
 ```
 
-The following request clears every song for an album:
+The following request clears every song for an album with `id` of `1`:
 
 ```http
 PATCH /albums/1/songs HTTP/1.1
@@ -816,11 +829,11 @@ Accept: application/json
 }
 ```
 
-If a client makes a `POST` request, the server **MUST** add the specified members to the relationship unless they are already present.  If a given member is already in the relationship, the server **MUST NOT** add it again.
+If a client makes a `POST` request, the API **MUST** add the specified members to the relationship unless they are already present.  If a given member is already in the relationship, the API **MUST NOT** add it again.
 
-If all of the specified resources can be added to, or are already present in, the relationship then the server **MUST** return a successful response.
+If all of the specified resources can be added to, or are already present in, the relationship then the API **MUST** return a successful response.
 
-The following request adds the song with ID `345` to the list of songs for the album with ID `1`:
+The following request adds the song with ID `345` to the list of songs for the album with `id` of `1`:
 
 ```http
 POST /albums/1/songs HTTP/1.1
@@ -834,9 +847,9 @@ Accept: application/json
 }
 ```
 
-If the client makes a `DELETE` request, the server **MUST** delete the specified members from the relationship or return a `403 Forbidden` response.  If all of the specified members resources are able to be removed from, or are already missing from, the relationship then the server **MUST** return a successful response.
+If the client makes a `DELETE` request, the API **MUST** delete the specified members from the relationship or return a `403 Forbidden` response.  If all of the specified members resources are able to be removed from, or are already missing from, the relationship then the API **MUST** return a successful response.
 
-The following request removes songs with IDs `17` and `29` from the album with ID `1`:
+The following request removes songs with IDs `17` and `29` from the album with `id` of `1`:
 
 ```http
 DELETE /albums/1/songs HTTP/1.1
@@ -855,15 +868,15 @@ Accept: application/json
 
 ##### 200 OK
 
-A server **MUST** return a `200 OK` status code if an update is successful.  The response document **MUST** include a representation of the updated relationship(s).
+The API **MUST** return a `200 OK` status code if an update is successful.  The response document **MUST** include a representation of the updated relationship(s).
 
 ##### 403 Forbidden
 
-A server **MUST** return `403 Forbidden` in responses to an unsupported request to update a relationship.
+The API **MUST** return `403 Forbidden` in responses to an unsupported request to update a relationship.
 
 ##### Other Responses
 
-A server **MAY** respond with other HTTP status codes.
+The API **MAY** respond with other HTTP status codes.
 
 <hr/>
 
@@ -880,17 +893,17 @@ Accept: application/json
 
 ##### 204 No Content
 
-A server **MUST** return a `204 No Content` status code if a deletion request is successful and no content is returned.
+The API **MUST** return a `204 No Content` status code if a deletion request is successful and no content is returned.
 
 ##### Other Responses
 
-A server **MAY** respond with other HTTP status codes.
+The API **MAY** respond with other HTTP status codes.
 
 <hr/>
 
 ## <a href="#query-parameters" id="query-parameters" class="headerlink"></a> Query Parameters
 
-If a server encounters a query parameter that it does not know how to process, it **MUST** return `400 Bad Request`
+If the API encounters a query parameter that it does not know how to process, it **MUST** return `400 Bad Request`
 
 <hr/>
 
@@ -898,9 +911,9 @@ If a server encounters a query parameter that it does not know how to process, i
 
 ### <a href="#processing-errors" id="processing-errors" class="headerlink"></a> Processing Errors
 
-A server **MAY** choose to stop processing as soon as a problem is encountered, or it **MAY** continue processing and encounter multiple problems.
+The API **MAY** choose to stop processing as soon as a problem is encountered, or it **MAY** continue processing and encounter multiple problems.
 
-When a server encounters multiple problems for a single request, the most generally applicable HTTP error code **SHOULD** be used in the response. The following is a list of common error codes:
+When the API encounters multiple problems for a single request, the most generally applicable HTTP error code **SHOULD** be used in the response. The following is a list of common error codes:
 
 Status Code | Status Message | Description
 ----------- | -------------- | -----------
