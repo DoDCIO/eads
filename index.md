@@ -64,6 +64,26 @@ HTTPS **SHOULD** be configured using guides provided by [DISA](http://iase.disa.
 
 <hr/>
 
+### <a href="#date-format" id="date-format" class="headerlink"></a> Use a consistent date format
+
+* The ISO 8601 date/time format **MUST** be used `YYYY-MM-DDTHH:MM:SSZ`.
+* Maintain all times in UTC.
+* This date format is used all over the web, and puts each field in consistent order -- from least granular to most granular.
+
+Example date:
+
+```
+2013-02-27
+```
+
+Example date with time:
+
+```
+2013-02-27-T10:00:00Z
+```
+
+<hr/>
+
 ### <a href="#json" id="json" class="headerlink"></a> Use JSON
 
 [JSON](https://en.wikipedia.org/wiki/JSON) is an excellent, widely supported transport format, suitable for many web APIs.
@@ -180,24 +200,6 @@ The API **SHOULD** place this documentation at the root path for each version.  
 ## <a href="#schema-guidelines" id="schema-guidelines" class="headerlink"></a> Schema Guidelines
 
 This section describes the structure of request/response documents.  These documents are defined in [JavaScript Object Notation (JSON)](https://tools.ietf.org/html/rfc7159).
-
-### <a href="#date-format" id="date-format" class="headerlink"></a> Use a consistent date format
-
-* The ISO 8601 date/time format **MUST** be used `YYYY-MM-DDTHH:MM:SSZ`.
-* Maintain all times in UTC.
-* This date format is used all over the web, and puts each field in consistent order -- from least granular to most granular.
-
-Example date:
-
-```
-2013-02-27
-```
-
-Example date with time:
-
-```
-2013-02-27-T10:00:00Z
-```
 
 <hr/>
 
