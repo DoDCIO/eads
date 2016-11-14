@@ -62,6 +62,8 @@ This section describes general guidelines for RESTful APIs.
 
 HTTPS **SHOULD** be configured using guides provided by [DISA](http://iase.disa.mil/pki-pke/Pages/admin.aspx).
 
+> HTTP **MAY** be used for purely internal interfaces where authentication is not needed.
+
 <hr/>
 
 ### <a href="#date-format" id="date-format" class="headerlink"></a> Use a consistent date format
@@ -88,23 +90,21 @@ Example date with time:
 
 [JSON](https://en.wikipedia.org/wiki/JSON) is an excellent, widely supported transport format, suitable for many web APIs.
 
-Supporting JSON and only JSON is a practical default for APIs, and generally reduces complexity for both the API provider and consumer.
+Supporting JSON and only JSON is a practical default for APIs, and generally reduces complexity for both the API provider and consumer.  Many client applications are now developed using JavaScript, so it makes sense for APIs to use a native format.  In addition, JSON produces smaller payload sizes as compared to XML.
 
 General JSON guidelines:
 
-* Responses **MUST** be a **JSON object** (not an array). Using an array to return results limits the ability to include metadata about results, and limits the API's ability to add additional top-level keys in the future.
+* Responses **MUST** be a **JSON object** (not an array). Using an array to return results limits the ability to include metadata about results, and limits the API's ability to add additional top-level keys in the future.  In addition, returning an array can be exploited using a JSON Array hack.
 * **Don't use unpredictable keys**. Parsing a JSON response where keys are unpredictable (e.g. derived from data) is difficult, and adds friction for clients.
 * **Use consistent case for keys**. The API **SHOULD** use camelCase for API keys.
 
-> Alternative formats, such as PDF and CSV **MAY** be allowed.  XML **MUST NOT** be used.
+> Alternative formats, such as PDF and CSV **MAY** be allowed.
 
 <hr/>
 
 ### <a href="#utf8" id="utf8" class="headerlink"></a> Use UTF-8
 
-Just [use UTF-8](http://utf8everywhere.org/).
-
-Expect accented characters or "smart quotes" in API output, even if they're not expected.
+[Use UTF-8](http://utf8everywhere.org/).
 
 An API **SHOULD** tell clients to expect UTF-8 by including a charset notation in the `Content-Type` header for responses.
 
@@ -362,7 +362,7 @@ Responses can be further refined with the optional features described below.
 
 ### <a href="#retrieving-resources" id="retrieving-resources" class="headerlink"></a> Retrieving Resources
 
-There are 2 ways to retrieve resources:
+There are 2 main patterns for retrieve resources:
 
 * Retrieve a collection of resources
 * Retrieve a single resource
