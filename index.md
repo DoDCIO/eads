@@ -51,9 +51,9 @@ This section describes general guidelines for RESTful APIs.
 
 <hr/>
 
-### <a href="#https" id="https" class="headerlink"></a> Always use HTTPS
+### <a href="#https" id="https" class="headerlink"></a> Use HTTPS
 
-**ALL** APIs **MUST** use and require HTTPS (using TLS/SSL). HTTPS provides:
+Published APIs **MUST** use and require HTTPS (using TLS/SSL). HTTPS provides:
 
 * **Security**. The contents of the request are encrypted across the Internet.
 * **Authenticity**. A stronger guarantee that a client is communicating with the real API.
@@ -62,7 +62,7 @@ This section describes general guidelines for RESTful APIs.
 
 HTTPS **SHOULD** be configured using guides provided by [DISA](http://iase.disa.mil/pki-pke/Pages/admin.aspx).
 
-> HTTP **MAY** be used for purely internal interfaces where authentication is not needed.
+> **NOTE** HTTP **MAY** be used for non-published, purely internal interfaces.
 
 <hr/>
 
@@ -90,21 +90,25 @@ Example date with time:
 
 [JSON](https://en.wikipedia.org/wiki/JSON) is an excellent, widely supported transport format, suitable for many web APIs.
 
-Supporting JSON and only JSON is a practical default for APIs, and generally reduces complexity for both the API provider and consumer.  Many client applications are now developed using JavaScript, so it makes sense for APIs to use a native format.  In addition, JSON produces smaller payload sizes as compared to XML.
+Supporting JSON and only JSON is a practical default for APIs, and generally reduces complexity for both the API provider and consumer.
 
 General JSON guidelines:
 
-* Responses **MUST** be a **JSON object** (not an array). Using an array to return results limits the ability to include metadata about results, and limits the API's ability to add additional top-level keys in the future.  In addition, returning an array can be exploited using a JSON Array hack.
+* Responses **MUST** be a **JSON object** (not an array). Using an array to return results limits the ability to include metadata about results, and limits the API's ability to add additional top-level keys in the future.
 * **Don't use unpredictable keys**. Parsing a JSON response where keys are unpredictable (e.g. derived from data) is difficult, and adds friction for clients.
 * **Use consistent case for keys**. The API **SHOULD** use camelCase for API keys.
 
 > Alternative formats, such as PDF and CSV **MAY** be allowed.
 
+#### Why We Recommend JSON over XML
+
+For decades, DoD Information Systems (IS) have used XML as a preferred data format.  So, why use JSON?  Many client applications are now developed using JavaScript, so it makes sense for APIs to use a native format.  In addition, JSON produces smaller payload sizes as compared to XML, making more efficient use of network bandwidth.
+
 <hr/>
 
 ### <a href="#utf8" id="utf8" class="headerlink"></a> Use UTF-8
 
-[Use UTF-8](http://utf8everywhere.org/).
+[Use UTF-8](http://utf8everywhere.org/).  When sharing data it is important for all systems involved to speak the same language to ensure data is properly and consistently interpreted.
 
 An API **SHOULD** tell clients to expect UTF-8 by including a charset notation in the `Content-Type` header for responses.
 
@@ -144,7 +148,7 @@ Content-Type: application/json; charset=utf-8
 * Version names **MUST** be integers, not decimal numbers, preceded by the letter `v`: `v1`, `v2`, `v3`...
 * Include the version number as part of the request path: `https://[BASE_URL]/[VERSION]/[RESOURCE]`
 * The API **SHOULD** respond with a `406 Not Acceptable` status code if a request specifies an unsupported version.
-* Increment the version number any time breaking changes are introduced.
+* Increment the version number any time breaking changes are introduced.  Breaking changes are any changes that would cause an existing client to stop working as expected.
 * Maintain APIs at least one version back.
 
 <hr/>
@@ -206,6 +210,8 @@ This section describes the structure of request/response documents.  These docum
 ### <a href="#top-level" id="top-level" class="headerlink"></a> Top Level
 
 A JSON object **MUST** be at the root of every request/response document.  This object defines a document's "top level".
+
+> Returning an array at the root level of a response is vulnerable to a CSRF attack whereby an external website can access the response data.
 
 A document **MUST** contain at least one of the following top-level members:
 
