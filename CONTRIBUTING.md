@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping improve the Enterprise API for Data Sharing (EADS) initiative.  By contributing to the EADS Handbook, you are helping establish a standard for APIs within the Department of Defense that will enable a better developer experience (DX) and time to market for consumers of various data sets within the department.
+Thank you for your interest in helping improve the Enterprise API for Data Sharing (EADS) initiative.  By contributing to the EADS Handbook, you are helping establish a standard for APIs within the Department of Defense that will enable a better developer experience (DX) and time to market for consumers of various data sets within the department.
 
 ## Questions/Issues
 
@@ -16,7 +16,7 @@ To learn more about opening an issue, please visit [Creating an Issue](https://h
 
 A question should be opened when you are uncertain about something documented in the handbook and need clarification.
 
-To create a question, use the same process for creating an issue, and select the label `question` on submission (it's a magenta colored box)
+To create a question, use the [same process for creating an issue](https://help.github.com/articles/creating-an-issue/), and select the label `question` on submission (it's a magenta colored box)
 
 ## Pull Request Process
 
@@ -24,9 +24,9 @@ The `master` branch is a reserved branch that cannot be pushed to directly and c
 
 The process for creating a pull request is...
 
-* Create a feature branch for the enhancement/change that you are requesting.  As a convention, all feature branches should be preceded by the `feature/` prefix.  For example, if I was updating a README typo, my branch name would be `feature/readme-typo`.
+* Create a feature branch for the enhancement/change that you are requesting.  As a convention, all feature branches should be preceded by the `feature/` prefix.  For example, if you was updating a README typo, your branch name would be `feature/readme-typo`.
 
-* Make the necessary updated to your local branch
+* Make the necessary updates to your local branch
 
 * Push all changes to the remote hosted by GitHub (typically `origin`), so for example:
 
@@ -37,7 +37,7 @@ git push origin feature/readme-typo
 * Then create a pull request on GitHub.  Click to find more information on [Creating a Pull Request](https://help.github.com/articles/creating-a-pull-request/).  The `base` branch should be the `master` branch for merging.
 
 ## Collaboration
-We welcome and appreciate all suggestions, questions, and pull requests into the EADS Handbook repository.  As suggestions and pull requests are made, the EADS team will open communication up directly to contributors to better understand the requests being made and help resolve how (or if) they should be incorporated into the repository.  This exchange will typically happen in the comments section for issues, questions, and pull requests.
+We welcome and appreciate all suggestions, questions, and pull requests into the EADS Handbook repository.  As suggestions and pull requests are made, the EADS team will open communication up directly to contributors to better understand the requests being made and help resolve how (or if) they should be incorporated into the handbook.  This exchange will typically happen in the comments section for issues, questions, and pull requests.
 
 Though the goal of this open repository is collaboration, the EADS Team has the final authority over what will be accepted. 
 
