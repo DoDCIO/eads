@@ -102,13 +102,21 @@ General JSON guidelines:
 
 #### Why We Recommend JSON over XML
 
-For decades, DoD Information Systems (IS) have used XML as a preferred data format.  So, why use JSON?  Many client applications are now developed using JavaScript, so it makes sense for APIs to use a native format.  In addition, JSON produces smaller payload sizes as compared to XML, making more efficient use of network bandwidth.
+For decades, DoD Information Systems (IS) have used XML as a preferred data exchange format.  So, why use JSON?  RESTful APIs are designed to be performant and easy to use.  Below are a few comparisons between XML and JSON and why we consider JSON to be best format for REST APIs.
+
+* XML is a document markup language, JSON is not.  JSON is more data-oriented and allows for easy mapping to object-oriented systems.
+* Many modern programming languages have JSON support built-in.  There is no need to use or install additional libraries such as those needed for XML parsing.
+* Based on syntax, JSON typically produces smaller payloads making more efficient use of network bandwidth.
+* Many client applications are now developed using JavaScript, so it makes sense for APIs to use a native format.
+* XML has been around for a while and has many standards around data validations and data compliance.  Though less mature, JSON also has several standards available (e.g. JSON Schema, HAL, LD) to handle these situations.
+
+RESTful APIs have historically supported both XML and JSON formats.  Over the past few years, there has been a shift to supporting JSON only.  In addition to the list above, supporting a single format increases maintainability and decreases development time.  For those reasons, we choose to support JSON only.
 
 <hr/>
 
 ### <a href="#utf8" id="utf8" class="headerlink"></a> Use UTF-8
 
-[Use UTF-8](http://utf8everywhere.org/).  When sharing data it is important for all systems involved to speak the same language to ensure data is properly and consistently interpreted.
+[Use UTF-8](http://utf8everywhere.org/).  When sharing data it is important for all systems involved to speak the same language to ensure data is properly and consistently interpreted.  The UTF-8 character encoding is widely used and has become the preferred choice for REST APIs.
 
 An API **SHOULD** tell clients to expect UTF-8 by including a charset notation in the `Content-Type` header for responses.
 
@@ -203,7 +211,7 @@ The API **SHOULD** place this documentation at the root path for each version.  
 
 ## <a href="#schema-guidelines" id="schema-guidelines" class="headerlink"></a> Schema Guidelines
 
-This section describes the structure of request/response documents.  These documents are defined in [JavaScript Object Notation (JSON)](https://tools.ietf.org/html/rfc7159).
+RESTful APIs involve the sending (request) and receiving (response) of [JSON](https://tools.ietf.org/html/rfc7159) documents. This section provides guidance on the structure of both request and response documents.
 
 <hr/>
 
@@ -568,7 +576,7 @@ GET /albums?limit=20&offset=40 HTTP/1.1
 Accept: application/json
 ```
 
-The API **MUST** define `default` and `maximum` values for `limit`.
+To maintain desired performance and to minimize the possibility of a denial of service attack when requesting large collections, the API **MUST** define `default` and `maximum` values for `limit`.  When `limit` is not specified by the client, the API should return the number of resource objects specified by the `default` value.  If the client specifies the `limit` and it is greater than the `maximum`, the API should only return the number of resource objects specified by the `maximum` value.
 
 The API **MUST** return a `400 Bad Request` if the value specified by the `offset` query parameter exceeds the total resource count of the resource being retrieved.
 
