@@ -51,9 +51,9 @@ This section describes general guidelines for RESTful APIs.
 
 <hr/>
 
-### <a href="#https" id="https" class="headerlink"></a> Always use HTTPS
+### <a href="#https" id="https" class="headerlink"></a> Use HTTPS
 
-**ALL** APIs **MUST** use and require HTTPS (using TLS/SSL). HTTPS provides:
+Published APIs **MUST** use and require HTTPS (using TLS/SSL). HTTPS provides:
 
 * **Security**. The contents of the request are encrypted across the Internet.
 * **Authenticity**. A stronger guarantee that a client is communicating with the real API.
@@ -62,7 +62,7 @@ This section describes general guidelines for RESTful APIs.
 
 HTTPS **SHOULD** be configured using guides provided by [DISA](http://iase.disa.mil/pki-pke/Pages/admin.aspx).
 
-> HTTP **MAY** be used for purely internal interfaces where authentication is not needed.
+> **NOTE** HTTP **MAY** be used for non-published, purely internal interfaces.
 
 <hr/>
 
@@ -90,21 +90,34 @@ Example date with time:
 
 [JSON](https://en.wikipedia.org/wiki/JSON) is an excellent, widely supported transport format, suitable for many web APIs.
 
-Supporting JSON and only JSON is a practical default for APIs, and generally reduces complexity for both the API provider and consumer.  Many client applications are now developed using JavaScript, so it makes sense for APIs to use a native format.  In addition, JSON produces smaller payload sizes as compared to XML.
+Supporting JSON and only JSON is a practical default for APIs, and generally reduces complexity for both the API provider and consumer.
 
 General JSON guidelines:
 
-* Responses **MUST** be a **JSON object** (not an array). Using an array to return results limits the ability to include metadata about results, and limits the API's ability to add additional top-level keys in the future.  In addition, returning an array can be exploited using a JSON Array hack.
+* Responses **MUST** be a **JSON object** (not an array). Using an array to return results limits the ability to include metadata about results, and limits the API's ability to add additional top-level keys in the future.
 * **Don't use unpredictable keys**. Parsing a JSON response where keys are unpredictable (e.g. derived from data) is difficult, and adds friction for clients.
 * **Use consistent case for keys**. The API **SHOULD** use camelCase for API keys.
 
 > Alternative formats, such as PDF and CSV **MAY** be allowed.
 
+#### Why We Recommend JSON over XML
+
+For decades, DoD Information Systems (IS) have used XML as a preferred data exchange format.  So, why use JSON?  RESTful APIs are designed to be performant and easy to use.  Below are a few comparisons between XML and JSON and why we consider JSON to be best format for REST APIs.
+
+* XML is a document markup language, JSON is not.  JSON is more data-oriented and allows for easy mapping to object-oriented systems.
+* Many modern programming languages have JSON support built-in.  There is no need to use or install additional libraries such as those needed for XML parsing.
+* Based on syntax, JSON typically produces smaller payloads making more efficient use of network bandwidth.
+* Most [client applications](http://githut.info/) are now developed using JavaScript, so it makes sense for APIs to use a native format.
+* XML has been around for a while and has many standards around data validations and data compliance.  Though less mature, JSON also has several standards available (e.g. [JSON Schema](http://json-schema.org/), HAL, LD) to handle these situations.
+* JSON document stores have gained significant popularity in data stores that can easily store, query, and aggregate using JSON only. This evolution is happening in NoSQL data stores ([elasticsearch](https://www.elastic.co/products/elasticsearch), [mongoDB](https://www.mongodb.com/), [solr](http://lucene.apache.org/solr/), [CouchDB](http://couchdb.apache.org/), etc ) as well as SQL databases like [PostgreSQL](https://www.postgresql.org/docs/current/static/datatype-json.html).
+
+RESTful APIs have historically supported both XML and JSON formats.  Over the past few years, there has been a shift to supporting JSON only.  In addition to the list above, supporting a single format increases maintainability and decreases development time.  For those reasons, we choose to support JSON only.
+
 <hr/>
 
 ### <a href="#utf8" id="utf8" class="headerlink"></a> Use UTF-8
 
-[Use UTF-8](http://utf8everywhere.org/).
+[Use UTF-8](http://utf8everywhere.org/).  When sharing data it is important for all systems involved to speak the same language to ensure data is properly and consistently interpreted.  The UTF-8 character encoding is widely used and has become the preferred choice for REST APIs.
 
 An API **SHOULD** tell clients to expect UTF-8 by including a charset notation in the `Content-Type` header for responses.
 
@@ -144,7 +157,7 @@ Content-Type: application/json; charset=utf-8
 * Version names **MUST** be integers, not decimal numbers, preceded by the letter `v`: `v1`, `v2`, `v3`...
 * Include the version number as part of the request path: `https://[BASE_URL]/[VERSION]/[RESOURCE]`
 * The API **SHOULD** respond with a `406 Not Acceptable` status code if a request specifies an unsupported version.
-* Increment the version number any time breaking changes are introduced.
+* Increment the version number any time breaking changes are introduced.  Breaking changes are any changes that would cause an existing client to stop working as expected.
 * Maintain APIs at least one version back.
 
 <hr/>
@@ -199,13 +212,15 @@ The API **SHOULD** place this documentation at the root path for each version.  
 
 ## <a href="#schema-guidelines" id="schema-guidelines" class="headerlink"></a> Schema Guidelines
 
-This section describes the structure of request/response documents.  These documents are defined in [JavaScript Object Notation (JSON)](https://tools.ietf.org/html/rfc7159).
+RESTful APIs involve the sending (request) and receiving (response) of [JSON](https://tools.ietf.org/html/rfc7159) documents. This section provides guidance on the structure of both request and response documents.
 
 <hr/>
 
 ### <a href="#top-level" id="top-level" class="headerlink"></a> Top Level
 
 A JSON object **MUST** be at the root of every request/response document.  This object defines a document's "top level".
+
+> Returning an array at the root level of a response is vulnerable to a CSRF attack whereby an external website can access the response data.
 
 A document **MUST** contain at least one of the following top-level members:
 
@@ -562,7 +577,7 @@ GET /albums?limit=20&offset=40 HTTP/1.1
 Accept: application/json
 ```
 
-The API **MUST** define `default` and `maximum` values for `limit`.
+To maintain desired performance and to minimize the possibility of a denial of service attack when requesting large collections, the API **MUST** define `default` and `maximum` values for `limit`.  When `limit` is not specified by the client, the API should return the number of resource objects specified by the `default` value.  If the client specifies the `limit` and it is greater than the `maximum`, the API should only return the number of resource objects specified by the `maximum` value.
 
 The API **MUST** return a `400 Bad Request` if the value specified by the `offset` query parameter exceeds the total resource count of the resource being retrieved.
 
