@@ -107,8 +107,9 @@ For decades, DoD Information Systems (IS) have used XML as a preferred data exch
 * XML is a document markup language, JSON is not.  JSON is more data-oriented and allows for easy mapping to object-oriented systems.
 * Many modern programming languages have JSON support built-in.  There is no need to use or install additional libraries such as those needed for XML parsing.
 * Based on syntax, JSON typically produces smaller payloads making more efficient use of network bandwidth.
-* Many client applications are now developed using JavaScript, so it makes sense for APIs to use a native format.
-* XML has been around for a while and has many standards around data validations and data compliance.  Though less mature, JSON also has several standards available (e.g. JSON Schema, HAL, LD) to handle these situations.
+* Most [client applications](http://githut.info/) are now developed using JavaScript, so it makes sense for APIs to use a native format.
+* XML has been around for a while and has many standards around data validations and data compliance.  Though less mature, JSON also has several standards available (e.g. [JSON Schema](http://json-schema.org/), HAL, LD) to handle these situations.
+* JSON document stores have gained significant popularity in data stores that can easily store, query, and aggregate using JSON only. This evolution is happening in NoSQL data stores ([elasticsearch](https://www.elastic.co/products/elasticsearch), [mongoDB](https://www.mongodb.com/), [solr](http://lucene.apache.org/solr/), [CouchDB](http://couchdb.apache.org/), etc ) as well as SQL databases like [PostgreSQL](https://www.postgresql.org/docs/current/static/datatype-json.html).
 
 RESTful APIs have historically supported both XML and JSON formats.  Over the past few years, there has been a shift to supporting JSON only.  In addition to the list above, supporting a single format increases maintainability and decreases development time.  For those reasons, we choose to support JSON only.
 
