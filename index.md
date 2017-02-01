@@ -12,6 +12,7 @@ This document borrows heavily from:
 * [White House Web API Standards](https://github.com/whitehouse/api-standards)
 * [18F API Standards](https://github.com/18F/api-standards)
 * [Roy Fielding's Dissertation on REST](http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
+* [{json:api}](http://jsonapi.org)
 
 In the spirit of transparency and collaboration, the EADS team is working with the larger DoD Technical Community (in a [public GitHub repository](https://github.com/540co/eads)) to help define a solution that best fits the DoD's needs.  Please refer to the [CONTRIBUTING.md](https://github.com/540co/eads/CONTRIBUTING.md) to see how you can contribute to this project.
 
