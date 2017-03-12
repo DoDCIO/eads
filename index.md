@@ -5,7 +5,7 @@ layout: default
 # Enterprise APIs for Data Sharing (EADS) Handbook
 
 ## <a href="#introduction" id="introduction" class="headerlink"></a> Introduction
-The Enterprise APIs for Data Sharing (EADS) effort is defining a set of guidelines for Department of Defense (DoD) APIs, encouraging consistency, maintainability, and best practices across applications. This EADS Handbook contains recommended tactics, techniques, and procedures (TTPs) to help balance RESTful API interfaces with a positive developer experience (DX).
+The Enterprise APIs for Data Sharing (EADS) effort defines a set of guidelines for developing Department of Defense (DoD) APIs - encouraging consistency, maintainability, and best practices across applications. This EADS Handbook contains recommended tactics, techniques, and procedures (TTPs) to help balance RESTful API interfaces with a positive developer experience (DX).
 
 This document borrows heavily from:
 
@@ -19,8 +19,9 @@ In the spirit of transparency and collaboration, the EADS team is working with t
 <hr/>
 
 ## <a href="#conventions" id="conventions" class="headerlink"></a> Conventions
+Please note that, while RFC-style conventions are used throughout this document for clarity to the development community, the content herein is not currently published as an official DoD instruction, and should be interpreted as recommended best practices only.  
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+In the context of following API development best practices, the key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
 interpreted as described in
 [RFC2119](http://tools.ietf.org/html/rfc2119).
