@@ -160,6 +160,7 @@ Content-Type: application/json; charset=utf-8
 * Include the version number as part of the request path: `https://[BASE_URL]/[VERSION]/[RESOURCE]`
 * The API **SHOULD** respond with a `406 Not Acceptable` status code if a request specifies an unsupported version.
 * Increment the version number any time breaking changes are introduced.  Breaking changes are any changes that would cause an existing client to stop working as expected.
+* Adding new resources or adding attributes to an existing resource does not require a new version as long as no breaking changes were introduced.
 * Maintain APIs at least one version back.
 
 <hr/>
