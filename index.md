@@ -100,7 +100,7 @@ General JSON guidelines:
 * **Don't use unpredictable keys**. Parsing a JSON response where keys are unpredictable (e.g. derived from data) is difficult, and adds friction for clients.
 * **Use consistent case for keys**. The API **SHOULD** use camelCase for API keys.
 
-> Alternative formats, such as PDF and CSV **MAY** be allowed.
+> Additional formats, such as PDF and CSV, are allowed in addition to JSON as need requires.
 
 #### Why We Recommend JSON over XML
 
