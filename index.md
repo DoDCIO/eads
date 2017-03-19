@@ -243,7 +243,7 @@ The `data` member **MUST** contain either:
 
 A resource object **MUST** contain at least the following top-level members:
 
-* `id`: The unique identifier for the resource [string].
+* `id`: The unique identifier for the resource [string or integer].
 * `href`: The unique url for the resource [string].
 
 In addition, a resource object **MAY** contain any of these top-level members:
@@ -260,7 +260,7 @@ A meta object is used to provide additional information about the data being ret
 A meta object **MUST** contain at least the following top-level members:
 
 * `resourceType`: The type of resource being returned in the `data` member [string].
-* `responseTime`: The execution time of the request in milliseconds [integer].
+* `responseTime`: The execution time of the request in seconds [float represented as formatted string].
 
 In addition, a meta object **MAY** contain any of these top-level members:
 
@@ -281,7 +281,7 @@ Accept: application/json
 {
   "meta": {
     "resourceType": "Album",
-    "responseTime": 39
+    "responseTime": "0.027186"
   },
   "data": [
     {
@@ -311,7 +311,7 @@ Accept: application/json
 {
   "meta": {
     "resourceType": "Album",
-    "responseTime": 22
+    "responseTime": "0.029371"
   },
   "data": {
     "id": "1",
@@ -352,7 +352,7 @@ Accept: application/json
 {
   "meta": {
     "resourceType": "Album",
-    "responseTime": 22
+    "responseTime": "0.027186"
   },
   "data": {
     "id": "1",
@@ -415,7 +415,7 @@ Content-Type: application/json
 {
   "meta": {
     "resourceType": "Album",
-    "responseTime": 39
+    "responseTime": "0.027186"
   },
   "data": [
     {
@@ -441,7 +441,7 @@ Content-Type: application/json
 {
   "meta": {
     "resourceType": "Album",
-    "responseTime": 19
+    "responseTime": "0.019229"
   },
   "data": []
 }
@@ -456,7 +456,7 @@ Content-Type: application/json
 {
   "meta": {
     "resourceType": "Album",
-    "responseTime": 22
+    "responseTime": "0.027186"
   },
   "data": {
     "id": "1",
@@ -686,7 +686,7 @@ Content-Type: application/json
 {
   "meta": {
     "resourceType": "Album",
-    "responseTime": 46
+    "responseTime": "0.034936"
   },
   "data": {
     "id": "3",
