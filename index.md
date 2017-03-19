@@ -567,6 +567,8 @@ Link: <https://[BASE_URL]/v1/[RESOURCE]/?limit=20&offset=0>; rel="first",
 
 A link **MUST** be omitted if it is unavailable.
 
+The links **MUST** include all query parameters provided in the request.
+
 The `limit` and `offset` query parameters are reserved for pagination and **SHOULD** be used by the API and clients for pagination operations.
 
 * `limit`: The number of resource objects to return in the response
