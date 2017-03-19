@@ -610,7 +610,9 @@ Single filters are implemented by providing the name of the field on which to fi
 Operator | Description | URL Encoded Operator | Examples
 -------- | ----------- | -------------------- | --------
 == | equal | %3D%3D | The year published is '2016'<br /> `?filters=yearPublished%3D%3D2016`
-!= | not equal | !%3D | The year published is not '2016'<br /> `filters=yearPublished!%3D2016`
+!= | not equal | !%3D | The year published is not '2016'<br /> `?filters=yearPublished!%3D2016`
+=@ | contains substring | %3D@ | The song title contains the substring 'happy'<br /> `?filters=title%3D@happy`
+!@ | does not contain substring | !@ | The song title does not contain the substring 'happy'<br /> `?filters=title!@happy`
 > | greater than | %3E | The year published is greater than 2000<br /> `?filters=yearPublished%3E2000`
 < | less than | %3C | The year published is less than 2016<br /> `?filters=yearPublished%3C2016`
 >= | greater than or equal | %3E%3D | The year published is greater than or equal to 2000<br /> `?filters=yearPublished%3E%3D2000`
