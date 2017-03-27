@@ -183,6 +183,21 @@ https://example.com/api/v1/albums/294/songs
 
 <hr/>
 
+### <a href="#http-verbs" id="http-verbs" class="headerlink"></a> HTTP Verbs
+
+HTTP verbs (GET, POST, PUT, PATCH, DELETE) are used to perform actions on a resource, a collection of resources, or relationships between resources.  For REST APIs, these verbs are mapped to traditional CRUD (create, read, update, and delete) operations.
+
+HTTP Verb | CRUD | Description
+----------|------|------------
+POST | Create | Creates a new resource
+GET | Read | Returns a resource or collection of resources
+PATCH | Update | Updates one or more attributes of a resource
+DELETE | Delete | Deletes a resource
+
+> PUT **MAY** be used to completely replace all attributes of a resource.
+
+<hr/>
+
 ### <a href="#cors" id="cors" class="headerlink"></a> Cross-Origin Resource Sharing (CORS)
 
 For clients to be able to use an API from inside web browsers, the API must [enable CORS](http://enable-cors.org/).
