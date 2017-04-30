@@ -70,17 +70,17 @@ HTTPS **SHOULD** be configured using guides provided by [DISA](http://iase.disa.
 
 ### <a href="#date-format" id="date-format" class="headerlink"></a> Use a consistent date format
 
-* The ISO 8601 date/time format **MUST** be used `YYYY-MM-DDTHH:MM:SSZ`.
+* The ISO 8601 date/time format **MUST** be used.
 * Maintain all times in UTC.
 * This date format is used all over the web, and puts each field in consistent order -- from least granular to most granular.
 
-Example date:
+Example date (`YYYY-MM-DD`):
 
 ```
 2013-02-27
 ```
 
-Example date with time:
+Example date with time (`YYYY-MM-DDTHH:MM:SSZ`):
 
 ```
 2013-02-27-T10:00:00Z
