@@ -70,17 +70,17 @@ HTTPS **SHOULD** be configured using guides provided by [DISA](http://iase.disa.
 
 ### <a href="#date-format" id="date-format" class="headerlink"></a> Use a consistent date format
 
-* The ISO 8601 date/time format **MUST** be used `YYYY-MM-DDTHH:MM:SSZ`.
+* The ISO 8601 date/time format **MUST** be used.
 * Maintain all times in UTC.
 * This date format is used all over the web, and puts each field in consistent order -- from least granular to most granular.
 
-Example date:
+Example date (`YYYY-MM-DD`):
 
 ```
 2013-02-27
 ```
 
-Example date with time:
+Example date with time (`YYYY-MM-DDTHH:MM:SSZ`):
 
 ```
 2013-02-27-T10:00:00Z
@@ -139,17 +139,17 @@ Content-Type: application/json; charset=utf-8
   Content-Type: application/json; charset=utf-8
   ```
 
-* The API **MUST** respond with a `415 Unsupported Media Type` status code if a client specifies a `Content-Type` other than `application/json`.
+* The API **MUST** respond with a `415 Unsupported Media Type` status code if a client specifies an unsupported media type in the `Content-Type` header.
 
-* Clients **SHOULD** specify a response media type of JSON with the header:
+* Clients **SHOULD** specify a response media type using the `Accept` header:
 
   ```http
   Accept: application/json
   ```
 
-  > If the `Accept` header is not sent, JSON will be sent back by default.
+  > If the `Accept` header is not sent, JSON should be sent back by default.
 
-* The API **MUST** respond with a `406 Not Acceptable` status code if a client requests an unsupported response format.
+* The API **MUST** respond with a `406 Not Acceptable` status code if a client requests an unsupported response media type in the `Accept` header.
 
 <hr/>
 
