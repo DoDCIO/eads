@@ -139,17 +139,17 @@ Content-Type: application/json; charset=utf-8
   Content-Type: application/json; charset=utf-8
   ```
 
-* The API **MUST** respond with a `415 Unsupported Media Type` status code if a client specifies a `Content-Type` other than `application/json`.
+* The API **MUST** respond with a `415 Unsupported Media Type` status code if a client specifies an unsupported media type in the `Content-Type` header.
 
-* Clients **SHOULD** specify a response media type of JSON with the header:
+* Clients **SHOULD** specify a response media type using the `Accept` header:
 
   ```http
   Accept: application/json
   ```
 
-  > If the `Accept` header is not sent, JSON will be sent back by default.
+  > If the `Accept` header is not sent, JSON should be sent back by default.
 
-* The API **MUST** respond with a `406 Not Acceptable` status code if a client requests an unsupported response format.
+* The API **MUST** respond with a `406 Not Acceptable` status code if a client requests an unsupported response media type in the `Accept` header.
 
 <hr/>
 
